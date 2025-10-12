@@ -1,3 +1,3 @@
 <template>
-  <RouterView />
+    归档
 </template>
