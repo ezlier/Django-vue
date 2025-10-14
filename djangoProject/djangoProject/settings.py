@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "blog_api.apps.BlogApiConfig",
     'rest_framework',
     'corsheaders',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -79,8 +80,15 @@ WSGI_APPLICATION = 'djangoProject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',  # 数据库类型
+        'NAME': 'myblog',                      # 数据库名
+        'USER': 'root',                        # 用户名
+        'PASSWORD': '123',                     # 密码
+        'HOST': '127.0.0.1',                   # 主机
+        'PORT': '3306',                        # 端口
+        'OPTIONS': {
+            'charset': 'utf8mb4',              # 支持表情和多语言
+        },
     }
 }
 
@@ -126,5 +134,11 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 
 CORS_ALLOW_ALL_ORIGINS = True
+

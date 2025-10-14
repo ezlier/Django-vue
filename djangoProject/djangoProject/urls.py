@@ -19,6 +19,6 @@ from django.urls import path
 from blog_api import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/hello/', views.hello),
+    path('api/login/', views.login_view),
+    path('api/admin/data/', views.admin_data),
 ]
