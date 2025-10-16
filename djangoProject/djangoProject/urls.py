@@ -20,5 +20,7 @@ from blog_api import views
 
 urlpatterns = [
     path('api/login/', views.login_view),
-    path('api/admin/data/', views.admin_data),
+    path('api/admin_data/', views.admin_data),
+    path('api/articles/', views.list_articles),
+    path('api/articles/<slug:slug>/', views.get_article),
 ]

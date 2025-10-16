@@ -3,7 +3,11 @@
     <div class="footer-content">
       <div class="copyright">
         <p> {{ currentYear }} by Ezria. blog. | 这个网页运行了 {{ daysRunning }}天</p>
-        <div style="display: flex;justify-content:center"><p class="theme-credit">咕咕咕</p></div>
+        <div style="display: flex;justify-content:center">
+          <p class="theme-credit">咕咕咕</p>
+          <li><RouterLink to="/login">后台</RouterLink></li>
+        </div>
+        
       </div>
       
     </div>

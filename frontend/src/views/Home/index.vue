@@ -1,5 +1,6 @@
 <script setup>
 import Welcome from './components/welcome.vue';
+import postlist from './components/postlist.vue';
 </script>
 
 <template>
@@ -7,21 +8,59 @@ import Welcome from './components/welcome.vue';
         <Welcome/>
     </div>
     <div class="content">
-        主页
+        <div class="row">
+            <div class="leftcolumn">
+
+            </div>
+            
+            <div class="rightcolumn">
+                <postlist/>
+            </div>
+        </div>
+
     </div>
 </template>
 
 <style scoped>
-    .content{
-        height: 1800px;
-        background-color: rgba(204, 204, 204, 0.9);
-    }
+.content{
+    height: 1800px;
+    background-color: rgba(204, 204, 204, 0.9);
+}
 
-    .header{
+.header{
     height: 100vh;
     display: flex;
     justify-content: center; /* 水平居中 */
     align-items: center;
-    }
+}
 
+.row {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    max-width: 1280px;
+    padding: 10px;
+    justify-content: center;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.leftcolumn {
+  flex: 0 0 20%; /* 固定25%宽度 */
+  /* background-color: #f1f1f1; */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 1px 2px 5px #fcbad3;
+  background-color: wheat;
+}
+
+.rightcolumn {
+  flex: 1;       
+  padding: 20px;
+  min-width: 0; 
+  width: 100%;
+  border-radius: 8px;
+  /* box-shadow: 2px 2px 5px #000; */
+}
 </style>
