@@ -23,7 +23,6 @@ import postlist from './components/postlist.vue';
 
 <style scoped>
 .content{
-    height: 1800px;
     background-color: rgba(204, 204, 204, 0.9);
 }
 
@@ -47,20 +46,26 @@ import postlist from './components/postlist.vue';
 }
 
 .leftcolumn {
-  flex: 0 0 20%; /* 固定25%宽度 */
-  /* background-color: #f1f1f1; */
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 1px 2px 5px #fcbad3;
-  background-color: wheat;
+    padding-bottom: 20px;
+    flex: 0 0 20%;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 1px 2px 5px #fcbad3;
+    background-color: wheat;
 }
 
 .rightcolumn {
-  flex: 1;       
-  padding: 20px;
-  min-width: 0; 
-  width: 100%;
-  border-radius: 8px;
-  /* box-shadow: 2px 2px 5px #000; */
+    flex: 1;       
+    padding: 20px;
+    min-width: 0; 
+    width: 100%;
+    border-radius: 8px;
+    /* box-shadow: 2px 2px 5px #000; */
+}
+
+@media (max-width: 1000px) {
+  .leftcolumn {
+    display: none;
+  }
 }
 </style>

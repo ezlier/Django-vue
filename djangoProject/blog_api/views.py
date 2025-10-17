@@ -9,6 +9,7 @@ import os
 import yaml
 import markdown
 
+
 @api_view(['POST'])
 def login_view(request):
     username = request.data.get('username')
@@ -30,11 +31,14 @@ def admin_data(request):
 
 ARTICLES_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'articles')
 
+from django.conf import settings
+from django.utils.html import escape
+
+
 def parse_markdown_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
 
-    # 分离 YAML front matter
     if content.startswith('---'):
         parts = content.split('---', 2)
         if len(parts) > 2:
@@ -47,14 +51,20 @@ def parse_markdown_file(filepath):
         meta = {}
         body = content
 
-    # 转成 HTML（如果你要在前端直接展示）
     html_body = markdown.markdown(body, extensions=['fenced_code', 'tables'])
+
+    # 拼接完整图片 URL
+    image_path = meta.get("image", "")
+    if image_path:
+        image_url = f"http://127.0.0.1:8000/static/{image_path.lstrip('/')}"
+    else:
+        image_url = ""
 
     return {
         "title": meta.get("title", "无标题"),
         "date": meta.get("date", ""),
         "tags": meta.get("tags", []),
-        "image": meta.get("image", ""),
+        "image": image_url,
         "content": html_body,
         "raw": body
     }

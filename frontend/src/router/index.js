@@ -5,6 +5,7 @@ import File from '@/views/File/index.vue'
 import About from '@/views/About/index.vue'
 import Login from '@/views/Login/index.vue'
 import Admin from '@/views/Admin/index.vue'
+import ArticleDetail from '@/views/Post/index.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,7 +25,13 @@ const router = createRouter({
         {
           path: 'about',
           component: About
+        },
+        {
+          path: 'post/:slug',
+          name: 'ArticleDetail',
+          component:ArticleDetail
         }
+
       ]
     },
     {
@@ -63,5 +70,6 @@ router.beforeEach((to, from, next) => {
   // 3️⃣ 其他页面正常放行
   next()
 })
+
 
 export default router
