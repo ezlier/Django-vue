@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
+from datetime import datetime
 import os
 import yaml
 import markdown
@@ -30,9 +31,6 @@ def admin_data(request):
 
 
 ARTICLES_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'articles')
-
-from django.conf import settings
-from django.utils.html import escape
 
 
 def parse_markdown_file(filepath):
@@ -60,9 +58,29 @@ def parse_markdown_file(filepath):
     else:
         image_url = ""
 
+    raw_date = meta.get("date", "")
+    formatted_date = ""
+
+    # 情况1：YAML 自动识别成 datetime 类型
+    if isinstance(raw_date, datetime):
+        formatted_date = raw_date.strftime("%Y-%m-%d")
+
+    # 情况2：字符串格式（带空格或T）
+    elif isinstance(raw_date, str):
+        for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d"):
+            try:
+                formatted_date = datetime.strptime(raw_date, fmt).strftime("%Y-%m-%d")
+                break
+            except ValueError:
+                continue
+
+    # 没法识别的就原样返回
+    else:
+        formatted_date = str(raw_date)
+
     return {
         "title": meta.get("title", "无标题"),
-        "date": meta.get("date", ""),
+        "date": formatted_date,
         "tags": meta.get("tags", []),
         "image": image_url,
         "content": html_body,

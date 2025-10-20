@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from "vue"
-import { getArticles, getArticle } from "@/utils/article"
+import { getArticles } from "@/utils/article"
 
 const articles = ref([])
 
@@ -37,6 +37,8 @@ const sortedArticles = computed(() => {
 }
 
 .card {
+  text-decoration: none; /* 去掉下划线 */
+  color: black; /* 设为黑色 */
   background-color: var(--bg-color);
   padding: 20px;
   border-radius: 8px;

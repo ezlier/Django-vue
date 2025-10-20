@@ -12,7 +12,7 @@ import footera from "@/views/Layout/components/Footer.vue"
     </div>
 
     <main class="main-content">
-            <router-view  />
+            <router-view/>
     </main>
 
     <div>
@@ -32,5 +32,20 @@ import footera from "@/views/Layout/components/Footer.vue"
   background-repeat: no-repeat;
   background-position: center;
   z-index: -1;             /* 放到内容后面 */
+}
+
+@media (max-width: 1000px) {
+  .bg {
+  position: fixed;         /* 固定在视口 */
+  top: 0;
+  left: 0;
+  width: 100vw;            /* 拉伸占满全屏 */
+  height: 100vh;
+  background-image: url('@/assets/img/bg2.png');
+  background-size: cover;  /* 拉伸裁剪为最大，保持比例 */
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: -1;             /* 放到内容后面 */
+}
 }
 </style>

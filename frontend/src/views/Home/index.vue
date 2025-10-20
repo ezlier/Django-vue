@@ -1,6 +1,9 @@
 <script setup>
 import Welcome from './components/welcome.vue';
 import postlist from './components/postlist.vue';
+import About from './components/about.vue';
+import RandomArticle from '@/views/Home/components/RandomArticle.vue'
+import Clock from '@/views/Home/components/clock.vue';
 </script>
 
 <template>
@@ -10,7 +13,11 @@ import postlist from './components/postlist.vue';
     <div class="content">
         <div class="row">
             <div class="leftcolumn">
-
+                <About/>
+                <div class="sticky-container">
+                    <RandomArticle class="RandomArticle"/>
+                    <Clock class="clock-wrapper"/>
+                </div>
             </div>
             
             <div class="rightcolumn">
@@ -22,6 +29,21 @@ import postlist from './components/postlist.vue';
 </template>
 
 <style scoped>
+.sticky-container {
+    
+  position: sticky;
+  top: 50px;
+}
+
+.RandomArticle{
+  margin-top: 20px;
+}
+
+.clock-wrapper {
+  width: 100%;
+  margin-top: 20px;
+}
+
 .content{
     background-color: rgba(204, 204, 204, 0.9);
 }
@@ -35,7 +57,7 @@ import postlist from './components/postlist.vue';
 
 .row {
     display: flex;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 20px;
     max-width: 1280px;
     padding: 10px;
@@ -47,11 +69,10 @@ import postlist from './components/postlist.vue';
 
 .leftcolumn {
     padding-bottom: 20px;
-    flex: 0 0 20%;
+    flex: 0 0 22%;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 1px 2px 5px #fcbad3;
-    background-color: wheat;
+    position: relative;
 }
 
 .rightcolumn {
