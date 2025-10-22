@@ -68,7 +68,6 @@ watch(() => route.path, updateActiveBar)
           <li><RouterLink to="/file" exact-active-class="router-link-active">归档</RouterLink></li>
           <li><RouterLink to="/about" exact-active-class="router-link-active">关于</RouterLink></li>
         </ul>
-        <div class="active-bar" :style="activeBarStyle"></div>
       </div>
 
       <!-- 移动端菜单 -->
@@ -102,7 +101,7 @@ watch(() => route.path, updateActiveBar)
 .navbar {
   position: fixed;
   top: 0; left: 0; right: 0;
-  background: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.1);
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   transition: all 0.5s ease;
@@ -140,16 +139,17 @@ watch(() => route.path, updateActiveBar)
   gap: 20px;
   list-style: none;
   margin: 0; padding: 0;
+  transition: color 0.5s ease;
 }
 
 .nav-links a {
   border-radius: 5px;
   text-decoration: none;
-  color: aliceblue;
+  color: black;
   font-weight: 500;
   position: relative;
   padding: 5px 10px;
-  transition: color 0.3s ease;
+  transition: color 0.5s ease;
 }
 
 .nav-links a:hover {
@@ -158,15 +158,6 @@ watch(() => route.path, updateActiveBar)
 
 }
 
-/* ===== 滑块动画条 ===== */
-.active-bar {
-  position: absolute;
-  bottom: -4px;
-  height: 3px;
-  background-color: #ffffd2;
-  border-radius: 2px;
-  transition: left 0.3s ease, width 0.3s ease;
-}
 
 /* ===== 移动端菜单 ===== */
 .menu-actions { display: none; }

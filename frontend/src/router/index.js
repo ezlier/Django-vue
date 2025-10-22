@@ -47,7 +47,14 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       redirect: '/' // 兜底跳转
     }
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
+    }
+  },
 })
 
 // ✅ 登录守卫逻辑

@@ -4,6 +4,8 @@ import { getArticles } from "@/utils/article"
 
 const articles = ref([])
 
+const loading = ref(true)
+
 onMounted(async () => {
   const res = await getArticles()
   const allArticles = res.data
@@ -14,6 +16,7 @@ onMounted(async () => {
   // 取前 N 条
   const N = 3 // 改成 2 就是取 2 条
   articles.value = shuffled.slice(0, N)
+  loading.value = false
 })
 </script>
 
@@ -27,6 +30,12 @@ onMounted(async () => {
         </span>
       </div>
     </template>
+    <div v-if="loading">
+      <el-skeleton-item variant="image" style="width: 100%; height: 120px" animated/>
+      <el-skeleton-item variant="image" style="width: 100%; height: 120px" animated/>
+      <el-skeleton-item variant="image" style="width: 100%; height: 120px" animated/>
+    </div>
+    
     <RouterLink 
       v-for="a in articles" 
       :key="a.slug" 

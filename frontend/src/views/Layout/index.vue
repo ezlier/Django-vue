@@ -12,7 +12,11 @@ import footera from "@/views/Layout/components/Footer.vue"
     </div>
 
     <main class="main-content">
-            <router-view/>
+            <transition name="fade" mode="out-in">
+              <router-view v-slot="{ Component }">
+                <component :is="Component" />
+              </router-view>
+            </transition>
     </main>
 
     <div>
@@ -21,6 +25,21 @@ import footera from "@/views/Layout/components/Footer.vue"
 </template>
 
 <style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease;
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
 .bg {
   position: fixed;         /* 固定在视口 */
   top: 0;
@@ -47,5 +66,9 @@ import footera from "@/views/Layout/components/Footer.vue"
   background-position: center;
   z-index: -1;             /* 放到内容后面 */
 }
+
+  .texiao{
+    display: none;
+  }
 }
 </style>

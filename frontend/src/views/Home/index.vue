@@ -1,7 +1,7 @@
 <script setup>
 import Welcome from './components/welcome.vue';
 import postlist from './components/postlist.vue';
-import About from './components/about.vue';
+import About from '@/views/Home/components/about.vue';
 import RandomArticle from '@/views/Home/components/RandomArticle.vue'
 import Clock from '@/views/Home/components/clock.vue';
 </script>
@@ -30,7 +30,6 @@ import Clock from '@/views/Home/components/clock.vue';
 
 <style scoped>
 .sticky-container {
-    
   position: sticky;
   top: 50px;
 }
