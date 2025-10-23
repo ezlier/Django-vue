@@ -179,7 +179,7 @@ function formatDate(date) {
   width: 0.75rem;
   height: 0.75rem;
   border-radius: 9999px;
-  border: 2px solid var(--primary, #fcbad3);
+  border: 2px solid #fcbad3;
   transform: translate(-50%, -50%);
 }
 
@@ -206,7 +206,7 @@ function formatDate(date) {
 
 .timeline-item:hover .timeline-title {
   transform: translateX(4px);
-  color: var(--primary, #aa96da);
+  color: #aa96da;
 }
 
 /* 日期在左边 */
@@ -252,7 +252,7 @@ function formatDate(date) {
 .timeline-item:hover .timeline-dot {
   width: 8px;
   height: 8px;
-  background-color: var(--primary, #fcbad3);
+  background-color: #fcbad3;
 }
 
 /* 标题 */

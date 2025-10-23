@@ -59,14 +59,28 @@ watch(() => route.path, updateActiveBar)
 <template>
   <nav class="navbar" :class="{ 'navbar-hidden': !isNavbarVisible, 'navbar-transparent': navbarTransparent }">
     <div class="navbar-inner">
-      <div class="logo">LOGO</div>
+      <div class="logo">
+        <RouterLink to="/" exact-active-class="router-link-active">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" ><path fill="currentColor" d="M288 128h608L736 384l160 256H288v320h-96V64h96z"></path></svg>
+          LOGO
+        </RouterLink>
+      </div>
 
       <!-- 桌面导航 -->
       <div class="nav-wrapper" ref="navRef">
         <ul class="nav-links desktop-nav">
-          <li><RouterLink to="/" exact-active-class="router-link-active">首页</RouterLink></li>
-          <li><RouterLink to="/file" exact-active-class="router-link-active">归档</RouterLink></li>
-          <li><RouterLink to="/about" exact-active-class="router-link-active">关于</RouterLink></li>
+          <li><RouterLink to="/" exact-active-class="router-link-active">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" ><path fill="currentColor" d="M512 128 128 447.936V896h255.936V640H640v256h255.936V447.936z"></path></svg>
+            首页
+          </RouterLink></li>
+          <li><RouterLink to="/file" exact-active-class="router-link-active">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" ><path fill="currentColor" d="M192 736h640V128H256a64 64 0 0 0-64 64zm64-672h608a32 32 0 0 1 32 32v672a32 32 0 0 1-32 32H160l-32 57.536V192A128 128 0 0 1 256 64"></path><path fill="currentColor" d="M240 800a48 48 0 1 0 0 96h592v-96zm0-64h656v160a64 64 0 0 1-64 64H240a112 112 0 0 1 0-224m144-608v250.88l96-76.8 96 76.8V128zm-64-64h320v381.44a32 32 0 0 1-51.968 24.96L480 384l-108.032 86.4A32 32 0 0 1 320 445.44z"></path></svg>
+            归档
+          </RouterLink></li>
+          <li><RouterLink to="/about" exact-active-class="router-link-active">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" ><path fill="currentColor" d="M288 320a224 224 0 1 0 448 0 224 224 0 1 0-448 0m544 608H160a32 32 0 0 1-32-32v-96a160 160 0 0 1 160-160h448a160 160 0 0 1 160 160v96a32 32 0 0 1-32 32z"></path></svg>
+            关于
+          </RouterLink></li>
         </ul>
       </div>
 
@@ -86,7 +100,10 @@ watch(() => route.path, updateActiveBar)
         <div class="sidebar" v-show="showSidebar">
           <h2>导航菜单</h2>
           <ul class="nav-links mobile-nav">
-            <li @click="closeSidebar"><RouterLink to="/" exact-active-class="router-link-active">首页</RouterLink></li>
+            <li @click="closeSidebar"><RouterLink to="/" exact-active-class="router-link-active">
+              
+              首页
+            </RouterLink></li>
             <li @click="closeSidebar"><RouterLink to="/file" exact-active-class="router-link-active">归档</RouterLink></li>
             <li @click="closeSidebar"><RouterLink to="/about" exact-active-class="router-link-active">关于</RouterLink></li>
           </ul>
@@ -99,6 +116,7 @@ watch(() => route.path, updateActiveBar)
 <style scoped>
 /* ===== 顶部导航基础样式 ===== */
 .navbar {
+  height: 72px;
   position: fixed;
   top: 0; left: 0; right: 0;
   background: rgba(255,255,255,0.1);
@@ -118,15 +136,32 @@ watch(() => route.path, updateActiveBar)
 }
 
 .navbar-inner {
+  height: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
   padding: 10px 20px;
 }
 
-.logo {
-  font-size: 1.2rem;
-  font-weight: bold;
+.logo a {
+  border-radius: 5px;
+  text-decoration: none;
+  color: #ffb6b9;
+  font-weight: 800;
+  position: relative;
+  padding: 0.4rem 1.25rem;
+  transition:  0.5s ease;
+}
+
+.logo a:hover {
+  background-color: #fae3d9;
+}
+
+.icon {
+  width: 20px;
+  vertical-align: middle;
 }
 
 /* ===== 桌面导航 ===== */
@@ -138,7 +173,8 @@ watch(() => route.path, updateActiveBar)
   display: flex;
   gap: 20px;
   list-style: none;
-  margin: 0; padding: 0;
+  margin: 0; 
+  padding: 0;
   transition: color 0.5s ease;
 }
 
@@ -148,13 +184,13 @@ watch(() => route.path, updateActiveBar)
   color: black;
   font-weight: 500;
   position: relative;
-  padding: 5px 10px;
-  transition: color 0.5s ease;
+  padding: 0.4rem 1.25rem;
+  transition:  0.5s ease;
 }
 
 .nav-links a:hover {
-  color: #1a1a1a;
-  background-color: #fcbad3;
+  color: #ffb6b9;
+  background-color: #fae3d9;
 
 }
 
