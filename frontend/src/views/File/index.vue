@@ -1,9 +1,9 @@
 <script setup>
 import { ref, onMounted, computed } from "vue"
 import { getArticles } from "@/utils/article"
-import About from '@/views/Home/components/about.vue';
-import RandomArticle from '@/views/Home/components/RandomArticle.vue'
-import Clock from '@/views/Home/components/clock.vue';
+import About from '@/components/about.vue';
+import RandomArticle from '@/components/RandomArticle.vue'
+import Clock from '@/components/clock.vue';
 
 const articles = ref([])
 
@@ -12,7 +12,7 @@ const loading = ref(true)
 onMounted(async () => {
   const res = await getArticles()
   articles.value = res.data
-  
+
   loading.value = false
 })
 
@@ -43,99 +43,36 @@ function formatDate(date) {
 </script>
 
 <template>
-    
-    <div class="header"></div>
-    <div class="content">
-        
-
-        <div class="row">
-            <div class="leftcolumn">
-                <About/>
-                <div class="sticky-container">
-                    <RandomArticle class="RandomArticle"/>
-                    <Clock class="clock-wrapper"/>
-                </div>
-            </div>
-            
-            <div class="rightcolumn">
-              <el-skeleton v-if="loading" :rows="20" animated />
-              <div class="timeline-container">
-                <div
-                  v-for="group in groupedArticles"
-                  :key="group.year"
-                  class="timeline-year-block"
-                >
-                  <!-- 年份标题行 -->
-                  <div class="timeline-year-header">
-                    <div class="timeline-year">{{ group.year }}</div>
-                    <div class="timeline-dot-outline"></div>
-                    <div class="timeline-year-count">
-                      {{ group.posts.length }} 篇文章
-                    </div>
-                  </div>
-
-                  <!-- 每篇文章 -->
-                  <RouterLink
-                    v-for="post in group.posts"
-                    :key="post.slug"
-                    :to="`/post/${post.slug}`"
-                    class="timeline-item"
-                  >
-                    <div class="timeline-date">{{ formatDate(post.date) }}</div>
-
-                    <div class="timeline-dot-line">
-                      <div class="timeline-dot"></div>
-                    </div>
-
-                    <div class="timeline-title">{{ post.title }}</div>
-
-                  </RouterLink>
-                </div>
-              </div>
-            </div>
+  <div class="rightcolumn">
+    <el-skeleton v-if="loading" :rows="20" animated />
+    <div class="timeline-container">
+      <div v-for="group in groupedArticles" :key="group.year" class="timeline-year-block">
+        <!-- 年份标题行 -->
+        <div class="timeline-year-header">
+          <div class="timeline-year">{{ group.year }}</div>
+          <div class="timeline-dot-outline"></div>
+          <div class="timeline-year-count">
+            {{ group.posts.length }} 篇文章
+          </div>
         </div>
 
+        <!-- 每篇文章 -->
+        <RouterLink v-for="post in group.posts" :key="post.slug" :to="`/post/${post.slug}`" class="timeline-item">
+          <div class="timeline-date">{{ formatDate(post.date) }}</div>
+
+          <div class="timeline-dot-line">
+            <div class="timeline-dot"></div>
+          </div>
+
+          <div class="timeline-title">{{ post.title }}</div>
+
+        </RouterLink>
+      </div>
     </div>
+  </div>
 </template>
 
 <style scoped>
-.content{
-    background-color: rgba(204, 204, 204, 0.9);
-}
-
-.row {
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-    max-width: 1280px;
-    padding: 10px;
-    justify-content: center;
-    margin: 0 auto;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.leftcolumn {
-    padding-bottom: 20px;
-    flex: 0 0 22%;
-    border-radius: 8px;
-    position: relative;
-}
-
-.sticky-container {
-  position: sticky;
-  top: 50px;
-}
-
-.RandomArticle{
-  margin-top: 20px;
-}
-
-.clock-wrapper {
-  width: 100%;
-  margin-top: 20px;
-}
-
 .rightcolumn {
   flex: 1;
   padding: 20px;
@@ -268,10 +205,4 @@ function formatDate(date) {
   padding-right: 1rem;
 }
 
-
-@media (max-width: 1000px) {
-  .leftcolumn {
-    display: none;
-  }
-}
 </style>

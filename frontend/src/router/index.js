@@ -14,23 +14,10 @@ const router = createRouter({
       path: '/',
       component: Layout,
       children: [
-        {
-          path: '',
-          component: Home
-        },
-        {
-          path: 'file',
-          component: File
-        },
-        {
-          path: 'about',
-          component: About
-        },
-        {
-          path: 'post/:slug',
-          name: 'ArticleDetail',
-          component:ArticleDetail
-        }
+        {path: '',name: "Home",component: Home},
+        {path: 'file',name: "File",component: File},
+        {path: 'about',name: "About",component: About},
+        {path: 'post/:slug',name: 'ArticleDetail',component:ArticleDetail}
 
       ]
     },

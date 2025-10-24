@@ -90,7 +90,8 @@ export default {
   display: flex;
   justify-content: center;
   padding: 20px;
-  
+  height: 100vh;
+  align-items: center;
 }
 
 .blog-container {

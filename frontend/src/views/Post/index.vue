@@ -4,6 +4,7 @@ import { useRoute } from "vue-router"
 import { getArticle } from "@/utils/article"
 import hljs from "highlight.js"
 import "highlight.js/styles/github-dark.css"
+import { bus } from "@/utils/eventBus"
 
 const route = useRoute()
 const article = ref(null)
@@ -14,6 +15,7 @@ onMounted(async () => {
   article.value = res.data
 
   await nextTick()
+  bus.emit("article-loaded")
   document.querySelectorAll("pre code").forEach((block) => {
     hljs.highlightElement(block)
   })
@@ -21,75 +23,26 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="content">
-        <div
-        v-if="article"
-        class="header"
-        :style="article?.image ? { backgroundImage: `url(${article.image})` } : {}"
-        >
-            <h1>{{ article.title }}</h1>
-        </div>
-        <div class="row">
-            <div class="post-leftcolumn">
-
-            </div>
-            
-            <div class="post-rightcolumn">
-                <div v-if="article" class="article-page">
-                    <el-tag effect="plain">
-                      <span>{{ article.date }}</span> | 
-                      <span>{{ article.tags }}</span>
-                    </el-tag>
-                    <div class="markdown-body" v-html="article.content"></div>
-                </div>
-
-                <div v-else class="loading">正在加载文章...</div>
-            </div>
-        </div>
-
+  <div class="post-rightcolumn">
+    <div v-if="article" class="article-page">
+      <el-tag effect="plain">
+        <span>{{ article.date }}</span> |
+        <span>{{ article.tags }}</span>
+      </el-tag>
+      <div class="markdown-body" v-html="article.content"></div>
     </div>
+
+    <div v-else class="loading">正在加载文章...</div>
+  </div>
 </template>
 
 <style>
-.content{
-    background-color: rgba(204, 204, 204, 0.9);
-}
-
-.header{
-    background-size: cover;
-    height: 300px;
-    display: flex;
-    justify-content: center; /* 水平居中 */
-    align-items: center;
-}
-
-.row {
-    min-height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-    max-width: 1280px;
-    padding: 10px;
-    justify-content: center;
-    margin: 0 auto;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.post-leftcolumn {
-  flex: 0 0 20%; /* 固定25%宽度 */
-  /* background-color: #f1f1f1; */
-  padding: 20px;
-  border-radius: 8px;
-  background-color: wheat;
-}
-
 .post-rightcolumn {
   border-color: rgba(0, 0, 0, 0.175);
   background-color: #fff;
-  flex: 1;       
+  flex: 1;
   padding: 10px;
-  min-width: 0; 
+  min-width: 0;
   width: 100%;
   border-radius: 8px;
   /* box-shadow: 2px 2px 5px #000; */
@@ -103,6 +56,7 @@ onMounted(async () => {
   color: black;
   line-height: 1.8;
 }
+
 .cover {
   width: 100%;
   border-radius: 10px;
@@ -121,7 +75,8 @@ onMounted(async () => {
   background-color: #272822;
   /* color: #d4d4d4; */
   border-radius: 8px;
-  padding-top: 32px; /* 预留顶部空间放语言标签和圆点 */
+  padding-top: 32px;
+  /* 预留顶部空间放语言标签和圆点 */
   padding: 16px;
   overflow-x: auto;
   margin: 20px 0;
@@ -182,7 +137,7 @@ onMounted(async () => {
   font-size: 0.95em;
   background-color: var(--bg-color);
   border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 /* 表头 */
@@ -224,7 +179,7 @@ onMounted(async () => {
 /* ---------- 暗色模式适配 ---------- */
 .dark .markdown-body table {
   background-color: #1e1e1e;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .dark .markdown-body thead {
