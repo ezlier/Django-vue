@@ -95,12 +95,11 @@ watch(
 <style scoped>
 .toc-container {
   position: sticky;
-  top: 100px;
-  background: #fff;
+  top:80px;
+  background: var(--bg-color);
   padding: 1rem 1.2rem;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  font-family: "LXGW WenKai", "Segoe UI", sans-serif;
   max-height: 80vh;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -110,7 +109,7 @@ watch(
   font-weight: bold;
   font-size: 1.1rem;
   margin-bottom: 0.6rem;
-  color: #444;
+  color: var(--text-color);
   border-bottom: 2px solid #fcbad3;
   padding-bottom: 0.3rem;
 }
@@ -133,7 +132,7 @@ watch(
   cursor: pointer;
   padding: 0.25rem 0.4rem;
   border-left: 2px solid transparent;
-  color: #555;
+  color: var(--text-color);
   line-height: 1.5;
   transition: all 0.2s;
   word-break: break-word;

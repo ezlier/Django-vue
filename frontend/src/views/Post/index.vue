@@ -25,10 +25,12 @@ onMounted(async () => {
 <template>
   <div class="post-rightcolumn">
     <div v-if="article" class="article-page">
+      <h1 style="font-size: 50px;">{{ article.title }}</h1>
       <el-tag effect="plain">
         <span>{{ article.date }}</span> |
         <span>{{ article.tags }}</span>
       </el-tag>
+      <el-divider content-position="left" class="divider">下面是文章</el-divider>
       <div class="markdown-body" v-html="article.content"></div>
     </div>
 
@@ -38,8 +40,9 @@ onMounted(async () => {
 
 <style>
 .post-rightcolumn {
+  min-height: 100vh;
   border-color: rgba(0, 0, 0, 0.175);
-  background-color: #fff;
+  background-color: var(--bg-color);
   flex: 1;
   padding: 10px;
   min-width: 0;
@@ -48,12 +51,13 @@ onMounted(async () => {
   /* box-shadow: 2px 2px 5px #000; */
 }
 
+
 .article-page {
   /* max-width: 800px; */
 
   padding-left: 2rem;
   padding-right: 2rem;
-  color: black;
+  color: var(--text-color);
   line-height: 1.8;
 }
 
@@ -67,6 +71,30 @@ onMounted(async () => {
   color: #aaa;
   text-align: center;
   margin-top: 2rem;
+}
+
+.markdown-body h1 {
+  position: relative;
+  transition:  0.5s ease;
+}
+
+.markdown-body h1::before {
+  left: -1rem;
+  width: 4px;
+  border-radius: 5px;
+  content: "|";
+  color: #ffb6b9;
+  position: absolute;
+}
+
+.markdown-body h1:hover {
+  color: #ffb6b9;
+}
+
+.markdown-body h1:hover::after {
+  position: absolute;
+  content: "#";
+  color: #ffb6b9;
 }
 
 /* 代码块样式 */

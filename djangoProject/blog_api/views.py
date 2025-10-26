@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 from datetime import datetime
+from django.conf import settings
 import os
 import yaml
 import markdown
@@ -110,3 +111,14 @@ def get_article(request, slug):
         return JsonResponse({"error": "not found"}, status=404)
     data = parse_markdown_file(file_path)
     return JsonResponse(data)
+
+
+def get_about_text(request):
+    about_path = os.path.join(settings.BASE_DIR, 'static', 'text', 'about.md')
+    try:
+        with open(about_path, 'r', encoding='utf-8') as f:
+            md_content = f.read()
+        html = markdown.markdown(md_content)
+        return JsonResponse({'html': html})
+    except FileNotFoundError:
+        return JsonResponse({'error': 'about.md not found'}, status=404)

@@ -78,7 +78,7 @@ function formatDate(date) {
   padding: 20px;
   min-width: 0;
   border-radius: 8px;
-  background-color: whitesmoke;
+  background-color: var(--bg-color);
 }
 
 /* === 时间线整体容器 === */
@@ -197,7 +197,7 @@ function formatDate(date) {
   width: 70%;
   text-align: left;
   font-weight: 600;
-  color: #444;
+  color: var(--text-color);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -9,6 +9,7 @@ urlpatterns = [
     path('api/admin_data/', views.admin_data),
     path('api/articles/', views.list_articles),
     path('api/articles/<path:slug>/', views.get_article),
+    path('api/about/', views.get_about_text)
 
 ]
 if settings.DEBUG:

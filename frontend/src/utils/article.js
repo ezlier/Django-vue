@@ -11,3 +11,5 @@ export const getPostSum = async () => {
   const count = articles.length
   return count
 }
+
+export const getAbout = () => axios.get(`${baseURL}/about/`)

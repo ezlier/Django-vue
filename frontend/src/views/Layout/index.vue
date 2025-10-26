@@ -10,6 +10,7 @@ import RandomArticle from '@/components/RandomArticle.vue'
 import Clock from '@/components/clock.vue';
 import ArticleToc from '@/components/ArticleToc.vue'
 
+
 const route = useRoute();
 
 // 动态计算 header 高度
@@ -26,6 +27,7 @@ const isPostPage = computed(() => route.name === "ArticleDetail");
 <template>
   <div class="bg" />
   <PointerTextTrail class="texiao " />
+  <el-backtop :right="40" :bottom="80" style="color: #fcbad3;"/>
 
   <navbar />
 
@@ -64,7 +66,7 @@ const isPostPage = computed(() => route.name === "ArticleDetail");
 
 <style scoped>
 .content {
-  background-color: rgba(204, 204, 204, 0.9);
+  background-color: var(--bg-content);
 }
 
 .header {

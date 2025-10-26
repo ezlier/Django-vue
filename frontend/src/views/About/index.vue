@@ -1,26 +1,29 @@
+<script setup>
+import {getAbout} from '@/utils/article'
+import { onMounted, ref } from 'vue';
+
+const article = ref(null)
+
+onMounted(async () => {
+    const res = await getAbout()
+    article.value = res.data
+})
+</script>
+
 <template>
     <div class="content">
-        <div class="about">
-            <h1>About</h1>
-        </div>
-        <div class="text">
-            <h4>介绍</h4>
-            <p>占位符</p>
-        </div>
-        <div class="about-me">
-            <h4>站长</h4>
-            <p>占位符</p>
-        </div>
-        <div class="about-blog">
-            <h4>关于本站</h4>
-            <p>占位符</p>
+        <div v-if="article">
+            <div class="markdown-body" v-html="article.html"></div>
         </div>
     </div>
 </template>
 
 <style scoped>
-.content{
-    background-color: whitesmoke;
+.content {
+    padding: 20px;
+    min-width: 0;
+    border-radius: 8px;
+    background-color: var(--bg-color);
 }
 
 </style>

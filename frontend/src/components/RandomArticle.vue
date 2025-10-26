@@ -58,7 +58,7 @@ onMounted(async () => {
   align-items: center;
   gap: 6px;
   font-size: 16px;
-  color: #333;
+  color: var(--text-color);
 }
 
 .icon-text svg {

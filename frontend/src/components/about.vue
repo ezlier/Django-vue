@@ -31,7 +31,7 @@ onMounted(async () => {
 <style scoped>
 
 .card {
-  flex: 1;
+  /* flex: 1; */
   background-color: var(--bg-color);
   padding: 20px;
   display: flex;
