@@ -1,8 +1,22 @@
 <template>
-  <div class="admin">
-    <h1 v-if="username">欢迎回来，{{ username }}</h1>
-    <p v-if="message">{{ message }}</p>
-    <button @click="logout">退出登录</button>
+  <div class="content">
+    <div class="header">
+      <div class="neirong">
+        <span style="padding-right: 20px;">{{ username }}</span>
+        <button @click="logout">退出</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="menu">
+        <p class="menu-item">1</p>
+        <p class="menu-item">1</p>
+        <p class="menu-item">1</p>
+        <p class="menu-item">1</p>
+      </div>
+      <div>
+
+      </div>
+    </div>
   </div>
 </template>
 
@@ -41,10 +55,26 @@ const logout = () => {
 
 
 <style scoped>
-.admin {
-  text-align: center;
-  margin-top: 200px;
+.header {
+  padding: 15px;
+  background-color: #000;
+  width: 100%;
 }
+
+.neirong {
+  text-align: right;
+}
+
+.menu {
+  max-width: 200px;
+}
+
+.menu-item{
+  padding: 10px;
+  width: 100%;
+  background-color: black;
+}
+
 button {
   padding: 10px 20px;
   background: #ff6b6b;

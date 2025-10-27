@@ -27,6 +27,7 @@
   --el-color-primary-light-8: #ffb6b9;
   --el-color-primary-light-9: #ffb6b9;
   --el-color-primary-dark-2: #ffb6b9;
+  --el-bg-color: whitesmoke;
 }
 
 html.dark {

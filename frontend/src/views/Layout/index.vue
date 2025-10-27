@@ -1,6 +1,9 @@
 <script setup>
 import { computed } from "vue";
 import { useRoute } from "vue-router";
+import { useThemeStore } from "@/stores/theme";
+import MeteorBackground from "@/components/MeteorBackground.vue";
+
 import PointerTextTrail from '@/components/PointerTextTrail.vue';
 import navbar from "@/views/Layout/components/nav.vue"
 import footera from "@/views/Layout/components/Footer.vue"
@@ -12,6 +15,7 @@ import ArticleToc from '@/components/ArticleToc.vue'
 
 
 const route = useRoute();
+const themeStore = useThemeStore();
 
 // 动态计算 header 高度
 const headerHeight = computed(() => {
@@ -25,9 +29,12 @@ const isPostPage = computed(() => route.name === "ArticleDetail");
 </script>
 
 <template>
-  <div class="bg" />
+  <transition name="fade">
+    <MeteorBackground v-if="themeStore.isDark" key="night" />
+    <div v-else class="bg" key="day" />
+  </transition>
   <PointerTextTrail class="texiao " />
-  <el-backtop :right="40" :bottom="80" style="color: #fcbad3;"/>
+  <el-backtop :right="40" :bottom="80" style="color: #fcbad3;" />
 
   <navbar />
 
@@ -65,6 +72,15 @@ const isPostPage = computed(() => route.name === "ArticleDetail");
 </template>
 
 <style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.8s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 .content {
   background-color: var(--bg-content);
 }
