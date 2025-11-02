@@ -3,12 +3,21 @@ import head from '@/assets/img/head.jpg'
 import { getPostSum } from "@/utils/article"
 import { ref, onMounted } from "vue"
 
+import { getWebSetting } from "@/utils/websetting"
+
+const form = ref([])
+onMounted(async () => {
+  
+})
+
 
 const articlesCount = ref()
 
 onMounted(async () => {
-  const res = await getPostSum()
-  articlesCount.value = res
+  const text = await getPostSum();
+  articlesCount.value = text;
+  const res = await getWebSetting();
+  form.value = res.data;
 })
 </script>
 
@@ -17,7 +26,7 @@ onMounted(async () => {
         <div class="avatar-container">
           <img :src='head' width="100" class="avatar" />
         </div>
-        <h1 style="color: #f77;">Ezria</h1>
+        <h1 style="color: #f77;">{{ form.name }}</h1>
         <div class="stats">
           <div class="stat-item">
             <span class="stat-label">文章</span>

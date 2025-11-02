@@ -92,7 +92,6 @@ const isPostPage = computed(() => route.name === "ArticleDetail");
 
 .row {
   display: flex;
-  /* align-items: flex-start; */
   gap: 20px;
   max-width: 1280px;
   padding: 20px;

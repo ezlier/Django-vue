@@ -13,3 +13,11 @@ export const getPostSum = async () => {
 }
 
 export const getAbout = () => axios.get(`${baseURL}/about/`)
+
+export const deleteArticle = (slug) =>
+  axios.delete(`${baseURL}/articles/`, {
+    data: { slug },
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })

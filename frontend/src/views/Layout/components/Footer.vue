@@ -2,9 +2,9 @@
   <footer class="kratos-footer ">
     <div class="footer-content">
       <div class="copyright">
-        <p>© {{ currentYear }} by Ezria blog. | 这个网页运行了 {{ daysRunning }}天</p>
+        <p>© {{ currentYear }} by Ezria blog. | 我们度过了{{ daysRunning }}个风雨</p>
         <div style="display: flex;justify-content:center">
-          <p class="theme-credit">咕咕咕</p>
+          <p class="theme-credit">{{ form.footer_text1 }}</p>
           <p>
             <RouterLink to="/login" class="aaa"><svg style="width: 25px;" xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 1024 1024">
@@ -14,7 +14,7 @@
               </svg></RouterLink>
           </p>
         </div>
-        <p>备案***************</p>
+        <p>{{ form.footer_text2 }}</p>
       </div>
 
     </div>
@@ -23,19 +23,21 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { getWebSetting } from "@/utils/websetting"
+
+const form = ref([])
+onMounted(async () => {
+  const res = await getWebSetting();
+  form.value = res.data;
+  const startDate = new Date(form.value.date);
+  const today = new Date();
+  const diffTime = Math.abs(today - startDate);
+  daysRunning.value = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+})
 
 const currentYear = computed(() => new Date().getFullYear());
 const daysRunning = ref(0);
 
-
-onMounted(() => {
-  const startDate = new Date('2025-07-18');
-  const today = new Date();
-  const diffTime = Math.abs(today - startDate);
-  daysRunning.value = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-
-});
 </script>
 
 <style scoped>

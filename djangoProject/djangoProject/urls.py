@@ -9,8 +9,10 @@ urlpatterns = [
     path('api/admin_data/', views.admin_data),
     path('api/articles/', views.list_articles),
     path('api/articles/<path:slug>/', views.get_article),
-    path('api/about/', views.get_about_text)
-
+    path('api/about/', views.get_about_text),
+    path('api/websetting', views.get_websetting),
+    path("api/visitor_stats/", views.visitor_stats),
+    path('api/message/', views.get_message)
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])

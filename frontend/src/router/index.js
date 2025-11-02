@@ -6,6 +6,10 @@ import About from '@/views/About/index.vue'
 import Login from '@/views/Login/index.vue'
 import Admin from '@/views/Admin/index.vue'
 import ArticleDetail from '@/views/Post/index.vue'
+import WebSetting from '@/views/Admin/components/WebSetting.vue'
+import PostSetting from '@/views/Admin/components/PostSetting.vue'
+import visitor_IP from '@/views/Admin/components/visitor_IP.vue'
+import MessageBoard from '@/views/MessageBoard/index.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,8 +22,10 @@ const router = createRouter({
         {path: 'file',name: "File",component: File},
         {path: 'about',name: "About",component: About},
         {path: 'post/:slug',name: 'ArticleDetail',component:ArticleDetail}
-
       ]
+    },
+    {
+      path: '/MessageBoard',name: 'MessageBoard',component:MessageBoard
     },
     {
       path: '/login',
@@ -28,11 +34,16 @@ const router = createRouter({
     {
       path: '/admin',
       component: Admin,
-      meta: { requiresAuth: true } // ✅ 后台页需要登录
+      meta: { requiresAuth: true }, // ✅ 后台页需要登录
+      children: [
+        {path: 'WebSetting',name: 'WebSetting',component:WebSetting},
+        {path: '',name: 'IP',component:visitor_IP},
+        {path: 'PostSetting',name: 'PostSetting',component:PostSetting},
+      ]
     },
     {
       path: '/:pathMatch(.*)*',
-      redirect: '/' // 兜底跳转
+      redirect: '/'
     }
   ],
   scrollBehavior(to, from, savedPosition) {
