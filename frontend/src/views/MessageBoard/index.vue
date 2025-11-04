@@ -13,14 +13,14 @@
                 </div>
             </div>
             <div class="message-list">
-                <div class="box">
-                    1111111
-                </div>
-                <div class="box">
-                    1111111
-                </div>
-                <div class="box">
-                    1111111
+                <div class="message-card" v-for="(value, index) in messageList" :key="index">
+                    <div class="message-header">
+                        <span class="name">{{ value.name }}</span>
+                        <span class="time">{{ value.time ? value.time.slice(0, 19).replace('T', ' ') : '' }}</span>
+                    </div>
+                    <div class="message-body">
+                        {{ value.text }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -33,23 +33,34 @@
 import navbar from "@/views/Layout/components/nav.vue"
 import footera from "@/views/Layout/components/Footer.vue"
 import { ElMessage } from "element-plus"
-import { upMessage } from '@/utils/message'
-import { ref } from 'vue'
+import { upMessage, getMessage } from '@/utils/message'
+import { onMounted, ref } from 'vue'
 
 const form = ref({
     message: "",
     name: "",
 })
 
+const a = async () =>{
+    const res = await getMessage()
+    messageList.value = res.data
+}
+
+const messageList = ref([])
+
 const pushMessage = async () => {
     try {
         const res = await upMessage(form.value)
         ElMessage.success("发送成功！")
+        a()
     } catch (err) {
         console.error(err)
         ElMessage.error("发送失败！")
     }
 }
+
+onMounted(a)
+
 
 </script>
 
@@ -88,7 +99,7 @@ const pushMessage = async () => {
     padding: 50px;
     margin-top: 80px;
     width: 100%;
-    background-color: whitesmoke;
+    background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
 }
 
@@ -101,11 +112,6 @@ const pushMessage = async () => {
     display: grid;
     gap: 20px;
     grid-template-columns: repeat(3, minmax(100px, 1fr));
-}
-
-.box {
-    padding: 20px;
-    background: beige;
 }
 
 .custom-btn {
@@ -213,6 +219,48 @@ const pushMessage = async () => {
 
 .btn-8 span:hover:after {
     width: 100%;
+}
+
+.message-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px 24px;
+  line-height: 1.6;
+  word-wrap: break-word;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* 悬停动画 */
+.message-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* 名字与时间 */
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.name {
+  font-weight: 600;
+  color: #7b4bb7;
+  font-size: 1.1em;
+}
+
+.time {
+  font-size: 0.85em;
+  color: #888;
+}
+
+/* 正文部分自适应高度 */
+.message-body {
+  white-space: pre-wrap; /* 保留换行 */
+  font-size: 1em;
+  color: #333;
 }
 
 @media (max-width: 768px) {

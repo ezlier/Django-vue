@@ -17,3 +17,7 @@ class Message(models.Model):
     text = models.TextField()
     name = models.CharField(max_length=30, verbose_name="姓名")
     time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
+
+
+class Bannedwords(models.Model):
+    word = models.TextField()

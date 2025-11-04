@@ -12,8 +12,8 @@
         <p class="menu-item"><RouterLink to="/admin">首页</RouterLink></p>
         <p class="menu-item"><RouterLink to="/admin/WebSetting">网站设置</RouterLink></p>
         <p class="menu-item"><RouterLink to="/admin/PostSetting">文章管理</RouterLink></p>
-        <p class="menu-item"><RouterLink>留言管理</RouterLink></p>
-        <p class="menu-item"><RouterLink>违禁词管理</RouterLink></p>
+        <p class="menu-item"><RouterLink to="/admin/MessageSetting">留言管理</RouterLink></p>
+        <p class="menu-item"><RouterLink to="/admin/Bannedwords">违禁词管理</RouterLink></p>
       </div>
       <div class="main-content">
         <RouterView />
@@ -58,6 +58,7 @@ const logout = () => {
 
 <style scoped>
 .content{
+  color: #000;
   background-color: whitesmoke;
   margin: 0 auto;
   max-width: 1280px;

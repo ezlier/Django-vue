@@ -9,3 +9,14 @@ export const upMessage = (data) => {
     },
   })
 }
+
+export const getMessage = () => axios.get(`${baseURL}/message/`)
+
+export const deleteMessage = (id) =>
+  axios.delete(`${baseURL}/message/`,{
+    data: {id},
+    headers: {
+      "Content-Type": "application/json",
+    }
+  })
+  

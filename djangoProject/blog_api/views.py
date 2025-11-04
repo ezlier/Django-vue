@@ -16,7 +16,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Visitor,Message
+
+from .models import Visitor, Message, Bannedwords
 
 
 def visitor_stats(request):
@@ -224,22 +225,43 @@ def get_websetting(request):
             return JsonResponse({"code": 500, "msg": f"保存失败: {e}"})
 
 
+bannedwords = "static/bannedwords.txt"
 @csrf_exempt
 def get_message(request):
     if request.method == "GET":
         messageList = Message.objects.all()
-
-        messageList = list(messageList.values("name", "text"))
-
+        messageList = list(messageList.values("name", "text", "time", "id", "ip"))
         return JsonResponse(messageList, safe=False)
+
     elif request.method == "POST":
         try:
+            bannedwords = Bannedwords.objects.all()
+            bannedwords = list(bannedwords.values("word"))
             ip = get_client_ip(request)
             now = datetime.now()
             body = json.loads(request.body.decode("utf-8"))
-            if len(body["message"]) == 0 and len(body["text"]) == 0:
+            if len(body["message"]) == 0 or len(body["name"]) == 0:
                 return
+            for i in bannedwords:
+                if i['word'] in body["message"] or i['word'] in body["name"]:
+                    return
             Message.objects.create(ip=ip, time=now, text=body["message"], name=body["name"])
             return JsonResponse({"code": 200})
         except Exception as e:
-            print("2")
+            return JsonResponse({"code": 500, "error": str(e)})
+
+    elif request.method == "DELETE":
+        try:
+            data = json.loads(request.body)
+            Message.objects.filter(id=data["id"]).delete()
+            return JsonResponse({"code": 200})
+        except Exception as e:
+            return JsonResponse({"code": 500, "error": str(e)})
+
+
+@csrf_exempt
+def bannedwords_setting(request):
+    if request.method == "GET":
+        bannedwords = Bannedwords.objects.all()
+        bannedwords = list(bannedwords.values("word"))
+        return JsonResponse(bannedwords, safe=False)

@@ -12,7 +12,9 @@ urlpatterns = [
     path('api/about/', views.get_about_text),
     path('api/websetting', views.get_websetting),
     path("api/visitor_stats/", views.visitor_stats),
-    path('api/message/', views.get_message)
+    path('api/message/', views.get_message),
+    path('api/bannedwords/', views.bannedwords_setting),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
