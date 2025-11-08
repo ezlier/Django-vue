@@ -16,12 +16,10 @@
     ref="uploadRef"
     class="upload-demo"
     style="max-width: 300px;"
-    action="http://127.0.0.1:8000/api/articles/"
     :auto-upload="false"
-    :headers="headers"
+    accept=".md"
     name="file"
-    :on-success="handleUploadSuccess"
-    :on-error="handleUploadError">
+    :http-request="uploadFile">
         <template #trigger>
             <el-button type="primary">select file</el-button>
         </template>
@@ -34,6 +32,7 @@
 </template>
 
 <script setup>
+import api from "@/utils/request"
 import { getArticles,deleteArticle  } from "@/utils/article";
 import { onMounted, ref } from "vue";
 import { ElMessage } from "element-plus";
@@ -41,7 +40,23 @@ import { ElMessage } from "element-plus";
 const articles = ref([]);
 const uploadRef = ref(null);
 
-// ✅ 封装获取文章函数
+const uploadFile = async (option) => {
+  const formData = new FormData()
+  formData.append("file", option.file)
+
+  try {
+    await api.post("/admin_articles/", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      withCredentials: true, // 再次确保带 cookie
+    })
+    ElMessage.success("上传成功！")
+    fetchArticles()
+  } catch (err) {
+    ElMessage.error("上传失败：" + (err.response?.data?.detail || err.message))
+  }
+}
+
+// 封装获取文章函数
 const fetchArticles = async () => {
   const res = await getArticles();
   articles.value = res.data;
@@ -65,14 +80,5 @@ const submitUpload = () => {
   uploadRef.value.submit();
 };
 
-// ✅ 上传成功时刷新表格
-const handleUploadSuccess = () => {
-  ElMessage.success("上传成功！请手动刷新页面");
-  fetchArticles();
-};
 
-// 上传失败时提示
-const handleUploadError = (err) => {
-  ElMessage.error("上传失败：" + err);
-};
 </script>

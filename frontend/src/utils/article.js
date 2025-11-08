@@ -1,23 +1,34 @@
-import axios from "axios"
+import api from "@/utils/request"
 
-const baseURL = "http://127.0.0.1:8000/api"
+// 获取单篇文章
+export const getArticle = (slug) => {
+  return api.get(`/articles/${slug}/`)
+}
 
-export const getArticles = () => axios.get(`${baseURL}/articles/`)
-export const getArticle = (slug) => axios.get(`${baseURL}/articles/${slug}/`)
-
+// 获取文章总数
 export const getPostSum = async () => {
-  const res = await axios.get(`${baseURL}/articles/`)
+  const res = await api.get(`/articles/`)
   const articles = res.data
   const count = articles.length
   return count
 }
 
-export const getAbout = () => axios.get(`${baseURL}/about/`)
+// 获取关于页内容
+export const getAbout = () => {
+  return api.get(`/about/`)
+}
 
-export const deleteArticle = (slug) =>
-  axios.delete(`${baseURL}/articles/`, {
+// 删除文章
+export const deleteArticle = (slug) => {
+  return api.delete(`/admin_articles/`, {
     data: { slug },
     headers: {
       "Content-Type": "application/json",
     },
   })
+}
+
+// 获取全部文章
+export const getArticles = () => {
+  return api.get(`/articles/`)
+}

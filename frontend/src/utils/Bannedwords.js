@@ -1,5 +1,16 @@
-import axios from "axios"
+import api from "@/utils/request"
 
-const baseURL = "http://127.0.0.1:8000/api"
+export const bannedwords = () => {
+    return api.get('/bannedwords/')
+}
 
-export const bannedwords = () => axios.get(`${baseURL}/bannedwords/`)
+export const addBannedWord = (data) => {
+    return api.post(`/bannedwords/`,data,{
+    })
+}
+
+export const deleteBannedWord = (id) => {
+    return api.delete(`/bannedwords/`,{
+        data: { id }
+    })
+}

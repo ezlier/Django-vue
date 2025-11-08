@@ -2,35 +2,43 @@ import json
 import os
 from datetime import datetime
 from datetime import timedelta
+import bleach
 
 import markdown
 import yaml
 from django.conf import settings
 from django.contrib.auth import authenticate
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.views.decorators.http import require_GET
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
-
+from django.views.decorators.csrf import ensure_csrf_cookie
+from rest_framework.permissions import IsAdminUser
+from django.utils.text import get_valid_filename
+from django.utils.html import escape
+from django.views.decorators.csrf import csrf_protect
+from django_ratelimit.decorators import ratelimit
 from .models import Visitor, Message, Bannedwords
+
+
+@ensure_csrf_cookie
+def get_csrf(request):
+    return JsonResponse({"detail": "CSRF cookie set"})
 
 
 def visitor_stats(request):
     total_visits = Visitor.objects.all()
     visitor_list = list(total_visits.values("ip", "visit_time"))
-
     return JsonResponse(visitor_list, safe=False)
 
 
 def record_visitor(request):
     ip = get_client_ip(request)
     path = request.path
-    user_agent = request.META.get("HTTP_USER_AGENT", "")
+    user_agent = escape(request.META.get("HTTP_USER_AGENT", "")[:256])
     now = timezone.now()
 
     # 查找该IP在最近10分钟是否访问过
@@ -49,7 +57,14 @@ def get_client_ip(request):
     return ip
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def admin_data(request):
+    return Response({'message': f'Welcome, {request.user.username}!'})
+
+
 @api_view(['POST'])
+@ratelimit(key='ip', rate='10/m', block=True)
 def login_view(request):
     username = request.data.get('username')
     password = request.data.get('password')
@@ -59,13 +74,7 @@ def login_view(request):
         token, created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key, 'username': user.username})
     else:
-        return Response({'error': 'Invalid credentials'}, status=400)
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def admin_data(request):
-    return Response({'message': f'Welcome, {request.user.username}!'})
+        return Response({'error': '用户名或密码错误'}, status=400)
 
 
 ARTICLES_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'articles')
@@ -87,14 +96,25 @@ def parse_markdown_file(filepath):
         meta = {}
         body = content
 
-    html_body = markdown.markdown(body, extensions=['fenced_code', 'tables'])
+    allowed_tags = [
+        "p", "pre", "code", "img", "h1", "h2", "h3", "h4", "h5",
+        "table", "thead", "tbody", "tr", "th", "td", "blockquote", "ul", "ol", "li", "a", "strong", "em"
+    ]
+    allowed_attrs = {
+        "img": ["src", "alt", "title"],
+        "a": ["href", "title", "target"]
+    }
+
+    html_body = bleach.clean(
+        markdown.markdown(body, extensions=["fenced_code", "tables"]),
+        tags=allowed_tags,
+        attributes=allowed_attrs,
+        strip=True
+    )
 
     # 拼接完整图片 URL
     image_path = meta.get("image", "")
-    if image_path:
-        image_url = f"http://127.0.0.1:8000/static/{image_path.lstrip('/')}"
-    else:
-        image_url = ""
+    image_url = image_path
 
     raw_date = meta.get("date", "")
     formatted_date = ""
@@ -126,10 +146,8 @@ def parse_markdown_file(filepath):
     }
 
 
-@csrf_exempt
 def list_articles(request):
     record_visitor(request)
-
     if request.method == 'GET':
         files = [f for f in os.listdir(ARTICLES_DIR) if f.endswith('.md')]
         data = []
@@ -142,12 +160,22 @@ def list_articles(request):
 
         return JsonResponse(data, safe=False)
 
-    elif request.method == 'POST':
+
+@api_view(['POST', 'DELETE'])
+@permission_classes([IsAdminUser])
+@csrf_protect
+def admin_articles(request):
+    record_visitor(request)
+    if request.method == 'POST':
         uploaded_file = request.FILES.get('file')
         if not uploaded_file:
             return JsonResponse({'error': '未接收到文件'}, status=400)
 
-        save_path = os.path.join(ARTICLES_DIR, uploaded_file.name)
+        filename = os.path.basename(get_valid_filename(uploaded_file.name))
+        if not filename.endswith(".md"):
+            return JsonResponse({'error': '只允许上传 Markdown 文件'}, status=400)
+
+        save_path = os.path.join(ARTICLES_DIR, filename)
         with open(save_path, 'wb+') as f:
             for chunk in uploaded_file.chunks():
                 f.write(chunk)
@@ -158,17 +186,17 @@ def list_articles(request):
         try:
             data = json.loads(request.body)
             slug = data.get("slug")
-            if not slug:
-                return JsonResponse({"error": "未提供文件名"}, status=400)
-
-            file_path = os.path.join(ARTICLES_DIR, f"{slug}.md")
+            slug = os.path.basename(slug)
+            if not slug.endswith(".md"):
+                slug += ".md"
+            file_path = os.path.join(ARTICLES_DIR, slug)
             if os.path.exists(file_path):
                 os.remove(file_path)
                 return JsonResponse({"message": "文件删除成功"})
             else:
                 return JsonResponse({"error": "文件不存在"}, status=404)
         except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
+            return JsonResponse({"error": "操作失败"}, status=500)
 
     else:
         return JsonResponse({"error": "滚"}, status=405)
@@ -197,8 +225,22 @@ def get_about_text(request):
 SETTINGS_FILE = "static/config/websetting.json"
 
 
-@csrf_exempt
-def get_websetting(request):
+@api_view(['POST', 'DELETE'])
+@permission_classes([IsAdminUser])
+def admin_websetting(request):
+    if request.method == "POST":
+        try:
+            body = json.loads(request.body.decode("utf-8"))
+            os.makedirs(os.path.dirname(SETTINGS_FILE), exist_ok=True)
+            with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
+                json.dump(body, f, ensure_ascii=False, indent=2)
+            return JsonResponse({"code": 200, "msg": "更新成功"})
+        except Exception as e:
+            return JsonResponse({"code": 500, "msg": f"保存失败: {e}"})
+
+
+@api_view(['GET'])
+def getwebsetting(request):
     if request.method == "GET":
         # 读取配置文件
         if os.path.exists(SETTINGS_FILE):
@@ -214,41 +256,39 @@ def get_websetting(request):
             }
         return JsonResponse(data)
 
-    elif request.method == "POST":
-        try:
-            body = json.loads(request.body.decode("utf-8"))
-            os.makedirs(os.path.dirname(SETTINGS_FILE), exist_ok=True)
-            with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
-                json.dump(body, f, ensure_ascii=False, indent=2)
-            return JsonResponse({"code": 200, "msg": "更新成功"})
-        except Exception as e:
-            return JsonResponse({"code": 500, "msg": f"保存失败: {e}"})
 
-
-bannedwords = "static/bannedwords.txt"
-@csrf_exempt
+@api_view(['POST', 'GET'])
+@ratelimit(key='ip', rate='10/m', block=True)
 def get_message(request):
     if request.method == "GET":
         messageList = Message.objects.all()
-        messageList = list(messageList.values("name", "text", "time", "id", "ip"))
+        messageList = list(messageList.values("name", "text", "time", "id"))
         return JsonResponse(messageList, safe=False)
-
     elif request.method == "POST":
         try:
             bannedwords = Bannedwords.objects.all()
             bannedwords = list(bannedwords.values("word"))
             ip = get_client_ip(request)
-            now = datetime.now()
+            now = timezone.now()
             body = json.loads(request.body.decode("utf-8"))
-            if len(body["message"]) == 0 or len(body["name"]) == 0:
-                return
+            if len(body["message"]) == 0 or len(body["name"]) == 0 or len(body["message"]) > 400 or len(body["name"]) > 10:
+                return JsonResponse({"code": 400, "error": "内容不能为空"})
             for i in bannedwords:
                 if i['word'] in body["message"] or i['word'] in body["name"]:
-                    return
+                    return JsonResponse({"code": 400, "error": "内容包含违禁词"}, status=400)
             Message.objects.create(ip=ip, time=now, text=body["message"], name=body["name"])
             return JsonResponse({"code": 200})
         except Exception as e:
-            return JsonResponse({"code": 500, "error": str(e)})
+            return JsonResponse({"code": 500})
+
+
+@api_view(['GET', 'DELETE'])
+@permission_classes([IsAdminUser])
+def admin_message(request):
+    if request.method == "GET":
+        messageList = Message.objects.all()
+        messageList = list(messageList.values("name", "text", "time", "id", "ip"))
+        return JsonResponse(messageList, safe=False)
 
     elif request.method == "DELETE":
         try:
@@ -256,12 +296,48 @@ def get_message(request):
             Message.objects.filter(id=data["id"]).delete()
             return JsonResponse({"code": 200})
         except Exception as e:
-            return JsonResponse({"code": 500, "error": str(e)})
+            return JsonResponse({"code": 500})
 
 
-@csrf_exempt
+@api_view(['POST', 'GET', 'DELETE'])
+@permission_classes([IsAdminUser])
 def bannedwords_setting(request):
     if request.method == "GET":
-        bannedwords = Bannedwords.objects.all()
-        bannedwords = list(bannedwords.values("word"))
-        return JsonResponse(bannedwords, safe=False)
+        # 获取全部违禁词
+        bannedwords = Bannedwords.objects.all().values("id", "word")
+        return JsonResponse(list(bannedwords), safe=False)
+
+    elif request.method == "POST":
+        # 添加违禁词
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+            word = data.get("word", "").strip()
+            if not word:
+                return JsonResponse({"code": 400, "error": "违禁词不能为空"}, status=400)
+
+            # 检查是否重复
+            if Bannedwords.objects.filter(word=word).exists():
+                return JsonResponse({"code": 409, "error": "该违禁词已存在"}, status=409)
+
+            Bannedwords.objects.create(word=word)
+            return JsonResponse({"code": 200, "msg": "添加成功"})
+        except Exception as e:
+            return JsonResponse({"code": 500, "error": "error"}, status=500)
+
+    elif request.method == "DELETE":
+        # 删除违禁词
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+            word_id = data.get("id")
+            if not word_id:
+                return JsonResponse({"code": 400, "error": "缺少id"}, status=400)
+
+            deleted, _ = Bannedwords.objects.filter(id=word_id).delete()
+            if deleted == 0:
+                return JsonResponse({"code": 404, "error": "未找到该违禁词"}, status=404)
+            return JsonResponse({"code": 200, "msg": "删除成功"})
+        except Exception as e:
+            return JsonResponse({"code": 500, "error": "error"}, status=500)
+
+    else:
+        return JsonResponse({"code": 405, "error": "Method Not Allowed"}, status=405)

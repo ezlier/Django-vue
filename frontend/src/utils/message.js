@@ -1,22 +1,19 @@
-import axios from "axios"
-
-const baseURL = "http://127.0.0.1:8000/api"
+import api from "@/utils/request"
 
 export const upMessage = (data) => {
-  return axios.post(`${baseURL}/message/`, data, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
+  return api.post("/message/", data)
 }
 
-export const getMessage = () => axios.get(`${baseURL}/message/`)
+export const getMessage = () => {
+  return api.get("/message/")
+}
 
-export const deleteMessage = (id) =>
-  axios.delete(`${baseURL}/message/`,{
-    data: {id},
-    headers: {
-      "Content-Type": "application/json",
-    }
+export const getadminMessage = () => {
+  return api.get("/admin_message/")
+}
+
+export const deleteMessage = (id) => {
+  return api.delete("/admin_message/", {
+    data: { id }
   })
-  
+}

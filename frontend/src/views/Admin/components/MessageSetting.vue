@@ -17,14 +17,14 @@
 </template>
 
 <script setup>
-import { getMessage, deleteMessage } from '@/utils/message'
+import { getadminMessage, deleteMessage } from '@/utils/message'
 import { onMounted, ref } from 'vue'
 import { ElMessage } from "element-plus";
 
 const messageList = ref([])
 
 const fetchMessage = async () => {
-    const res = await getMessage()
+    const res = await getadminMessage()
     messageList.value = res.data
 }
 

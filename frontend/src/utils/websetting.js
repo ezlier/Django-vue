@@ -1,11 +1,9 @@
-import axios from "axios"
+import api from "@/utils/request"
 
-const baseURL = "http://127.0.0.1:8000/api"
-
-export const getWebSetting = () => axios.get(`${baseURL}/websetting`)
+export const getWebSetting = () => api.get(`/get_websetting`)
 
 export const updateWebSetting = (data) => {
-  return axios.post(`${baseURL}/websetting`, data, {
+  return api.post(`/admin_websetting`, data, {
     headers: {
       "Content-Type": "application/json",
     },

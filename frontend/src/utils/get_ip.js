@@ -1,5 +1,3 @@
-import axios from "axios"
+import api from "@/utils/request"
 
-const baseURL = "http://127.0.0.1:8000/api"
-
-export const get_ip = () => axios.get(`${baseURL}/visitor_stats/`)
+export const get_ip = () => api.get(`/visitor_stats/`)
