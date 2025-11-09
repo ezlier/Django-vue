@@ -62,7 +62,7 @@ const router = createRouter({
 // ✅ 登录守卫逻辑
 router.beforeEach((to, from, next) => {
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('access_token')
 
   // 1️⃣ 未登录访问后台页 → 跳转登录页
   if (to.meta.requiresAuth && (!isLoggedIn || !token)) {

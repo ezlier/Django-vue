@@ -43,7 +43,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import axios from "axios";
+import api from "@/utils/request";;
 
 const router = useRouter();
 const username = ref("");
@@ -55,22 +55,23 @@ const handleLogin = async () => {
     return;
   }
 
-  try {
-    const res = await axios.post("http://127.0.0.1:8000/api/login/", {
+    try {
+    const res = await api.post("login/", {
       username: username.value,
       password: password.value,
     });
 
-    // 登录成功，保存 token
-    localStorage.setItem("token", res.data.token);
+    // ✅ 保存后端返回的 token / refresh
+    localStorage.setItem("access_token", res.data.token);
+    localStorage.setItem("refresh_token", res.data.refresh);
     localStorage.setItem("username", res.data.username);
     localStorage.setItem("isLoggedIn", "true");
-    console.log("登录成功，token:", res.data.token)
 
+    console.log("✅ 登录成功，access_token:", res.data.token);
     alert("登录成功！");
-    router.push("/admin"); // 跳转后台首页
+    router.push("/admin");
   } catch (err) {
-    console.error(err);
+    console.error("❌ 登录失败:", err);
     alert("用户名或密码错误！");
   }
 };

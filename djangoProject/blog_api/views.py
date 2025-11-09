@@ -11,7 +11,6 @@ from django.contrib.auth import authenticate
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.decorators.http import require_GET
-from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -19,8 +18,10 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.permissions import IsAdminUser
 from django.utils.text import get_valid_filename
 from django.utils.html import escape
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 from django_ratelimit.decorators import ratelimit
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from .models import Visitor, Message, Bannedwords
 
 
@@ -70,11 +71,19 @@ def login_view(request):
     password = request.data.get('password')
 
     user = authenticate(username=username, password=password)
-    if user is not None:
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key, 'username': user.username})
-    else:
+    if user is None:
         return Response({'error': '用户名或密码错误'}, status=400)
+
+    # 生成 JWT token
+    refresh = RefreshToken.for_user(user)
+    access_token = str(refresh.access_token)
+
+    return Response({
+        'token': access_token,
+        'refresh': str(refresh),
+        'username': user.username,
+        'expires_in': refresh.access_token.lifetime.total_seconds(),  # 例如3600秒
+    })
 
 
 ARTICLES_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'articles')
@@ -163,7 +172,7 @@ def list_articles(request):
 
 @api_view(['POST', 'DELETE'])
 @permission_classes([IsAdminUser])
-@csrf_protect
+@csrf_exempt
 def admin_articles(request):
     record_visitor(request)
     if request.method == 'POST':
@@ -236,7 +245,7 @@ def admin_websetting(request):
                 json.dump(body, f, ensure_ascii=False, indent=2)
             return JsonResponse({"code": 200, "msg": "更新成功"})
         except Exception as e:
-            return JsonResponse({"code": 500, "msg": f"保存失败: {e}"})
+            return JsonResponse({"code": 500, "msg": f"保存失败"})
 
 
 @api_view(['GET'])
