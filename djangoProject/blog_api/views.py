@@ -22,7 +22,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django_ratelimit.decorators import ratelimit
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import Visitor, Message, Bannedwords
+from .models import Visitor, Message, Bannedwords, Comment
 
 
 @ensure_csrf_cookie
@@ -121,7 +121,6 @@ def parse_markdown_file(filepath):
         strip=True
     )
 
-    # 拼接完整图片 URL
     image_path = meta.get("image", "")
     image_url = image_path
 
@@ -208,7 +207,7 @@ def admin_articles(request):
             return JsonResponse({"error": "操作失败"}, status=500)
 
     else:
-        return JsonResponse({"error": "滚"}, status=405)
+        return JsonResponse({"error": "e"}, status=405)
 
 
 @require_GET
@@ -350,3 +349,9 @@ def bannedwords_setting(request):
 
     else:
         return JsonResponse({"code": 405, "error": "Method Not Allowed"}, status=405)
+
+def get_commit(request, slug):
+    if request.method == "GET":
+        comments = Comment.objects.filter(article=slug).values("id", "ip", "name", "text", "time", "article")
+        print(comments)
+        return JsonResponse(list(comments), safe=False)

@@ -1,9 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue"
 import { getArticles } from "@/utils/article"
-import About from '@/components/about.vue';
-import RandomArticle from '@/components/RandomArticle.vue'
-import Clock from '@/components/clock.vue';
+
 
 const articles = ref([])
 
@@ -79,6 +77,9 @@ function formatDate(date) {
   min-width: 0;
   border-radius: 8px;
   background-color: var(--bg-color);
+  border-style:solid;
+  border-color: var(--border);
+  box-shadow: 2px 2px #000;
 }
 
 /* === 时间线整体容器 === */

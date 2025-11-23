@@ -5,6 +5,7 @@ import { getArticle } from "@/utils/article"
 import hljs from "highlight.js"
 import "highlight.js/styles/github-dark.css"
 import { bus } from "@/utils/eventBus"
+import comment from "./components/comment.vue"
 
 const route = useRoute()
 const article = ref(null)
@@ -35,10 +36,14 @@ onMounted(async () => {
     </div>
 
     <div v-else class="loading">正在加载文章...</div>
+
+    <el-divider content-position="left" class="divider">下面是评论</el-divider>
+    <comment/>
   </div>
 </template>
 
 <style>
+
 .post-rightcolumn {
   min-height: 100vh;
   border-color: rgba(0, 0, 0, 0.175);
@@ -48,13 +53,17 @@ onMounted(async () => {
   min-width: 0;
   width: 100%;
   border-radius: 8px;
+  border-style: solid;
+  border-color: var(--border);
+  box-shadow: 2px 2px #000;
   /* box-shadow: 2px 2px 5px #000; */
 }
 
+.comment-section {
+  padding: 20px;
+}
 
 .article-page {
-  /* max-width: 800px; */
-
   padding-left: 2rem;
   padding-right: 2rem;
   color: var(--text-color);
@@ -75,7 +84,7 @@ onMounted(async () => {
 
 .markdown-body h1 {
   position: relative;
-  transition:  0.5s ease;
+  transition: 0.5s ease;
 }
 
 .markdown-body h1::before {
@@ -95,6 +104,14 @@ onMounted(async () => {
   position: absolute;
   content: "#";
   color: #ffb6b9;
+}
+
+.markdown-body code {
+  background-color: #2c2c2e;
+  padding: 0 5px;
+  border-radius: 6px;
+  display: inline-flex;
+  color: whitesmoke;
 }
 
 /* 代码块样式 */

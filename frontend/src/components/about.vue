@@ -47,6 +47,9 @@ onMounted(async () => {
   flex-direction: column;
   align-items: center; 
   border-radius: 8px;
+  border-style:solid;
+  border-color: var(--border);
+  box-shadow: 2px 2px #000;
 }
 
 .avatar-container {

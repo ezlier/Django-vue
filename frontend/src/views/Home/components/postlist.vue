@@ -4,11 +4,13 @@ import { getArticles } from "@/utils/article";
 
 const articles = ref([]);
 const visibleCount = ref(6); // 每次显示的数量
+const loading = ref(true)
 
 onMounted(async () => {
   const res = await getArticles();
   articles.value = res.data;
   window.addEventListener("scroll", handleScroll);
+  loading.value = false;
 });
 
 onUnmounted(() => {
@@ -42,6 +44,7 @@ function loadMore() {
 </script>
 
 <template>
+  <el-skeleton v-if="loading" :rows="20"/>
   <div class="card-container">
     <RouterLink v-for="a in visibleArticles" :key="a.slug" :to="`/post/${a.slug}`" class="card">
       <h2>
@@ -99,12 +102,16 @@ function loadMore() {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: 0.3s ease;
+  border-style:solid;
+  border-color: var(--border);
+  box-shadow: 2px 2px #000;
 }
 
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   color: #ffb6b9;
+  border-color: #ffb6b9;
 }
 
 .icon {

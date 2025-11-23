@@ -99,10 +99,12 @@ watch(
   background: var(--bg-color);
   padding: 1rem 1.2rem;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   max-height: 80vh;
   overflow: hidden;
   transition: all 0.3s ease;
+  border-style:solid;
+  border-color: var(--border);
+  box-shadow: 2px 2px #000;
 }
 
 .toc-title {

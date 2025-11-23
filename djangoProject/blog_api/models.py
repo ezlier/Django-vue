@@ -21,3 +21,10 @@ class Message(models.Model):
 
 class Bannedwords(models.Model):
     word = models.TextField()
+
+class Comment(models.Model):
+    ip = models.CharField(max_length=50, verbose_name="IP")
+    text = models.TextField()
+    name = models.CharField(max_length=30, verbose_name="姓名")
+    time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
+    article = models.CharField(max_length=200, verbose_name="所属文章")

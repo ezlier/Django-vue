@@ -29,9 +29,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "blog_api.apps.BlogApiConfig",
     'rest_framework',
-    'django_ratelimit',
     'corsheaders',
     'rest_framework.authtoken',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -72,7 +72,7 @@ WSGI_APPLICATION = 'djangoProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # 数据库类型
-        'NAME': 'myblog',                      # 数据库名
+        'NAME': 'aaaaa',                      # 数据库名
         'USER': 'root',                        # 用户名
         'PASSWORD': '123',                     # 密码
         'HOST': '127.0.0.1',                   # 主机
@@ -145,15 +145,6 @@ CSRF_TRUSTED_ORIGINS = ['http://localhost:5173', 'http://127.0.0.1:5173',]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173",]
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",  # 可改成你的 Redis 地址
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
-}
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),     # access token 1小时过期
@@ -162,3 +153,7 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_HEADER_TYPES': ('Bearer',),                # 认证头类型
 }
+
+CRONJOBS = [
+    ('0 3 * * *', 'blog_api.cron.clear_old_visitors'),
+]

@@ -21,27 +21,29 @@ onMounted(async () => {
 </script>
 
 <template>
-    <el-card style="max-width: 480px" shadow="hover">
-    <template #header>
-      <div class="card-header">
-        <span class="icon-text">
-            <svg style="width: 20px;" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 1024 1024"><path fill="currentColor" d="M480 320h192c21.33 0 32-10.67 32-32s-10.67-32-32-32H480c-21.33 0-32 10.67-32 32s10.67 32 32 32"></path><path fill="currentColor" d="M887.01 72.99C881.01 67 873.34 64 864 64H160c-9.35 0-17.02 3-23.01 8.99C131 78.99 128 86.66 128 96v832c0 9.35 2.99 17.02 8.99 23.01S150.66 960 160 960h704c9.35 0 17.02-2.99 23.01-8.99S896 937.34 896 928V96c0-9.35-3-17.02-8.99-23.01M192 896V128h96v768zm640 0H352V128h480z"></path><path fill="currentColor" d="M480 512h192c21.33 0 32-10.67 32-32s-10.67-32-32-32H480c-21.33 0-32 10.67-32 32s10.67 32 32 32m0 192h192c21.33 0 32-10.67 32-32s-10.67-32-32-32H480c-21.33 0-32 10.67-32 32s10.67 32 32 32"></path></svg>
-            随便看看
-        </span>
-      </div>
-    </template>
-    <div v-if="loading">
-      <el-skeleton-item variant="image" style="width: 100%; height: 120px" animated/>
-      <el-skeleton-item variant="image" style="width: 100%; height: 120px" animated/>
-      <el-skeleton-item variant="image" style="width: 100%; height: 120px" animated/>
+  <div class="random">
+    <div class="card-header">
+      <span class="icon-text">
+        <svg style="width: 20px;" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 1024 1024">
+          <path fill="currentColor"
+            d="M480 320h192c21.33 0 32-10.67 32-32s-10.67-32-32-32H480c-21.33 0-32 10.67-32 32s10.67 32 32 32"></path>
+          <path fill="currentColor"
+            d="M887.01 72.99C881.01 67 873.34 64 864 64H160c-9.35 0-17.02 3-23.01 8.99C131 78.99 128 86.66 128 96v832c0 9.35 2.99 17.02 8.99 23.01S150.66 960 160 960h704c9.35 0 17.02-2.99 23.01-8.99S896 937.34 896 928V96c0-9.35-3-17.02-8.99-23.01M192 896V128h96v768zm640 0H352V128h480z">
+          </path>
+          <path fill="currentColor"
+            d="M480 512h192c21.33 0 32-10.67 32-32s-10.67-32-32-32H480c-21.33 0-32 10.67-32 32s10.67 32 32 32m0 192h192c21.33 0 32-10.67 32-32s-10.67-32-32-32H480c-21.33 0-32 10.67-32 32s10.67 32 32 32">
+          </path>
+        </svg>
+        随便看看
+      </span>
     </div>
-    
-    <RouterLink 
-      v-for="a in articles" 
-      :key="a.slug" 
-      :to="`/post/${a.slug}`" 
-      class="random-card"
-    >
+    <div v-if="loading">
+      <el-skeleton-item variant="image" style="width: 100%; height: 120px" animated />
+      <el-skeleton-item variant="image" style="width: 100%; height: 120px" animated />
+      <el-skeleton-item variant="image" style="width: 100%; height: 120px" animated />
+    </div>
+
+    <RouterLink v-for="a in articles" :key="a.slug" :to="`/post/${a.slug}`" class="random-card">
       <div class="image-wrapper">
         <img :src="a.image || '/default-cover.jpg'" alt="封面图">
         <div class="info">
@@ -49,10 +51,24 @@ onMounted(async () => {
         </div>
       </div>
     </RouterLink>
-  </el-card>
+  </div>
 </template>
 
 <style scoped>
+.random{
+  background-color: var(--bg-color);
+  padding: 20px;
+  max-width: 480px;
+  border-radius: 8px;
+  border-style:solid;
+  border-color: var(--border);
+  box-shadow: 2px 2px #000;
+}
+
+.card-header{
+  border-bottom: 2px dashed;
+}
+
 .icon-text {
   display: inline-flex;
   align-items: center;
@@ -69,6 +85,7 @@ onMounted(async () => {
 
 /* 随机文章卡片样式 */
 .random-card {
+  margin-top: 5px;
   display: block;
   position: relative;
   border-radius: 10px;
@@ -80,7 +97,6 @@ onMounted(async () => {
 
 .random-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
 }
 
 /* 图片封面 */
@@ -109,7 +125,7 @@ onMounted(async () => {
   left: 0;
   right: 0;
   padding: 10px 12px;
-  background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0));
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
   color: #fff;
 }
 

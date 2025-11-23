@@ -51,6 +51,9 @@ const texts = [
   '人们总说时间可以改变很多事，但事实上必须由你自己做出那些改变。',
   '年年乐事，华灯竞处，人月圆时。',
   '最长的路也有尽头，最黑暗的夜晚也会迎接清晨。',
+  '我会走得很远，远过这些山丘，远过这些大海，直到靠近星星。',
+  '生活永远是，也仅仅是我们现在经历的这一刻。',
+  '全力以赴度过今天，自然就能看清楚明天。'
 ]
 
 //当前显示内容
@@ -98,7 +101,7 @@ onUnmounted(() => {
   justify-content: center;
   padding: 20px;
   height: 100vh;
-  align-items: center;
+  /* align-items: center; */
 }
 
 .blog-container {
@@ -109,9 +112,21 @@ onUnmounted(() => {
 }
 
 .blog-content {
-  font-size: 2rem;
+  margin-top: 300px;
+  font-size: 4rem;
   font-weight: bold;
   color: #8785a2;
+  -webkit-box-reflect: below 1px linear-gradient(transparent, #000);
+  animation: animate 5s linear infinite;
+}
+@keyframes animate{
+  0%,21%,31%,51%,60%,80%,90%{
+    color: #8785a2;
+  }
+  20%,30%,50%,80%,100%{
+    color: whitesmoke;
+    text-shadow: 0 0 10px #8785a2,0 0 20px #8785a2,0 0 40px #8785a2,0 0 80px #8785a2
+  }
 }
 
 .sub-content {

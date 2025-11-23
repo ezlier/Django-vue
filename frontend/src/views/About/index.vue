@@ -1,5 +1,5 @@
 <script setup>
-import {getAbout} from '@/utils/article'
+import { getAbout } from '@/utils/article'
 import { onMounted, ref } from 'vue';
 
 const article = ref(null)
@@ -24,6 +24,8 @@ onMounted(async () => {
     min-width: 0;
     border-radius: 8px;
     background-color: var(--bg-color);
+    border-style: solid;
+    border-color: var(--border);
+    box-shadow: 2px 2px #000;
 }
-
 </style>
