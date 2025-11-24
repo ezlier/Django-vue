@@ -5,10 +5,11 @@
         <div class="row">
             <div class="message-box">
                 <el-input v-model="form.message" style="width: 100%" type="textarea"
-                    :autosize="{ minRows: 6, maxRows: 6 }" placeholder="Please input" maxlength="400" show-word-limit />
+                    :autosize="{ minRows: 6, maxRows: 6 }" placeholder="Please input" maxlength="400" show-word-limit/>
                 <div class="sure">
-                    <el-input v-model="form.name" style="width: 240px" maxlength="10" show-word-limit
-                        placeholder="name" />
+                    <el-input v-model="form.name" style="width: 240px" maxlength="10" show-word-limit placeholder="name" />
+                    <el-input v-model="form.QQ" style="width: 240px" maxlength="10" show-word-limit placeholder="QQ" />
+                    <el-input v-model="form.email" style="width: 240px" maxlength="10" show-word-limit placeholder="E-mail" />
                     <button class="custom-btn btn-8" @click="pushMessage"><span>这是提交喵</span></button>
                 </div>
             </div>
@@ -39,6 +40,8 @@ import { onMounted, ref } from 'vue'
 const form = ref({
     message: "",
     name: "",
+    QQ:"",
+    email:"",
 })
 
 const a = async () =>{
@@ -261,6 +264,10 @@ onMounted(a)
   white-space: pre-wrap; /* 保留换行 */
   font-size: 1em;
   color: #333;
+}
+
+:deep(.el-textarea__inner) {
+    resize: none !important;
 }
 
 @media (max-width: 768px) {

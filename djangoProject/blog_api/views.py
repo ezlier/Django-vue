@@ -284,7 +284,7 @@ def get_message(request):
             for i in bannedwords:
                 if i['word'] in body["message"] or i['word'] in body["name"]:
                     return JsonResponse({"code": 400, "error": "内容包含违禁词"}, status=400)
-            Message.objects.create(ip=ip, time=now, text=body["message"], name=body["name"])
+            Message.objects.create(ip=ip, time=now, text=body["message"], name=body["name"], QQ=body["QQ"], email=body["email"])
             return JsonResponse({"code": 200})
         except Exception as e:
             return JsonResponse({"code": 500})
@@ -295,7 +295,7 @@ def get_message(request):
 def admin_message(request):
     if request.method == "GET":
         messageList = Message.objects.all()
-        messageList = list(messageList.values("name", "text", "time", "id", "ip"))
+        messageList = list(messageList.values("name", "text", "time", "id", "ip", "QQ", "email"))
         return JsonResponse(messageList, safe=False)
 
     elif request.method == "DELETE":
@@ -350,8 +350,24 @@ def bannedwords_setting(request):
     else:
         return JsonResponse({"code": 405, "error": "Method Not Allowed"}, status=405)
 
+@api_view(['POST', 'GET'])
 def get_commit(request, slug):
     if request.method == "GET":
-        comments = Comment.objects.filter(article=slug).values("id", "ip", "name", "text", "time", "article")
-        print(comments)
+        comments = Comment.objects.filter(article=slug).values("name", "text", "time")
         return JsonResponse(list(comments), safe=False)
+    if request.method == "POST":
+        try:
+            bannedwords = Bannedwords.objects.all()
+            bannedwords = list(bannedwords.values("word"))
+            ip = get_client_ip(request)
+            now = timezone.now()
+            body = json.loads(request.body.decode("utf-8"))
+            if len(body["message"]) == 0 or len(body["name"]) == 0 or len(body["message"]) > 400 or len(body["name"]) > 10:
+                return JsonResponse({"code": 400, "error": "内容不能为空"})
+            for i in bannedwords:
+                if i['word'] in body["message"] or i['word'] in body["name"]:
+                    return JsonResponse({"code": 400, "error": "内容包含违禁词"}, status=400)
+            Comment.objects.create(ip=ip, time=now, text=body["message"], name=body["name"], QQ=body["QQ"], email=body["email"], article=slug)
+            return JsonResponse({"code": 200})
+        except Exception as e:
+            return JsonResponse({"code": 500})

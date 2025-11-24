@@ -43,7 +43,8 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import api from "@/utils/request";;
+import api from "@/utils/request";
+import { ElMessage } from "element-plus"
 
 const router = useRouter();
 const username = ref("");
@@ -68,7 +69,7 @@ const handleLogin = async () => {
     localStorage.setItem("isLoggedIn", "true");
 
     console.log("✅ 登录成功，access_token:", res.data.token);
-    alert("登录成功！");
+    ElMessage.success("登录成功！")
     router.push("/admin");
   } catch (err) {
     console.error("❌ 登录失败:", err);

@@ -1,22 +1,121 @@
+<script setup>
+import { getcomment, upcomment } from '@/utils/getcomment';
+import { onMounted, ref, reactive } from 'vue';
+import { useRoute } from "vue-router"
+import { ElMessage } from "element-plus"
+
+const comment = ref([])
+const route = useRoute()
+const loading = ref(false)   // 按钮 loading
+
+const form = reactive({
+    message: "",
+    name: "",
+    QQ: "",
+    email: "",
+    article: "",
+})
+
+onMounted(async () => {
+    const slug = route.params.slug
+    form.article = slug
+    await loadComments()
+})
+
+// 加载评论
+const loadComments = async () => {
+    const res = await getcomment(form.article)
+    comment.value = res.data
+}
+
+// 表单校验
+function validateForm() {
+    if (!form.message.trim()) {
+        ElMessage.error("说点什么再提交喵~")
+        return false
+    }
+
+    if (form.email && !/^\S+@\S+\.\S+$/.test(form.email)) {
+        ElMessage.error("E-mail 格式不太对喵~")
+        return false
+    }
+
+    if (form.QQ && !/^\d+$/.test(form.QQ)) {
+        ElMessage.error("QQ 只能是数字喵~")
+        return false
+    }
+
+    return true
+}
+
+// 提交评论
+const pushcomment = async () => {
+    if (!validateForm()) return
+
+    if (loading.value) return
+    loading.value = true
+
+    try {
+        await upcomment(form.article, form)
+        ElMessage.success("发送成功喵！")
+
+        // 清空表单
+        form.message = ""
+        form.name = ""
+        form.QQ = ""
+        form.email = ""
+
+        // 刷新评论
+        await loadComments()
+    } catch (err) {
+        console.error(err)
+        ElMessage.error("发送失败喵，请稍后再试~")
+    }
+
+    loading.value = false
+}
+</script>
+
+
+
 <template>
     <div class="comment-section">
         <div class="comment-input">
-            <textarea class="form-control"></textarea>
+            <textarea 
+                v-model="form.message" 
+                class="form-control"
+                placeholder="听说在这评论喵，讲话会不自觉带上某种口癖喵……是真的喵！">
+            </textarea>
+
             <div class="send">
-                <span>
-                    1 + 1 =
-                    <input type="text" style="width: 40px;">
-                </span>
-                <button class="custom-btn btn-8" @click=""><span>这是提交喵</span></button>
+                <div class="inputs-row">
+                    <el-input v-model="form.name" style="width: 240px" maxlength="10"
+                        show-word-limit placeholder="name" />
+
+                    <el-input v-model="form.QQ" style="width: 240px" maxlength="12"
+                        show-word-limit placeholder="QQ" />
+
+                    <el-input v-model="form.email" style="width: 240px" maxlength="50"
+                        show-word-limit placeholder="E-mail" />
+                </div>
+
+                <button class="custom-btn btn-8" @click="pushcomment" :disabled="loading">
+                    <span>
+                        {{ loading ? "喵…发送中…" : "这是提交喵" }}
+                    </span>
+                </button>
             </div>
         </div>
+
         <div class="comment-list">
-            <div class="comt-header">
-                <span class="name">name</span>
-                <span class="time">time</span>
-            </div>
-            <div class="comt-body">
-                text
+            <div class="comment-card" v-for="value in comment" :key="value.id">
+                <div class="comt-header">
+                    <span class="name">{{ value.name }}</span>
+                    <span class="time">{{ value.time ? value.time.slice(0, 19).replace('T', ' ') : '' }}</span>
+                </div>
+                <div class="comt-body">
+                    {{ value.text }}
+                </div>
             </div>
         </div>
     </div>
@@ -27,10 +126,17 @@
     border: 2px solid #ccd4d9;
 }
 
-.send {
-    text-align: right;
-    width: 100px;
-    height: 36px;
+.inputs-row {
+    display: flex;
+    gap: 15px;
+    /* 输入框之间的间距 */
+    margin-bottom: 12px;
+}
+
+.send .custom-btn {
+    display: block;
+    margin-left: auto;
+    /* 自动推到右边 */
 }
 
 .form-control {
@@ -47,30 +153,45 @@
     font-size: 14px;
 }
 
+.comment-card {
+    background: var(--bg-color);
+    padding: 16px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.25s ease, transform 0.15s ease;
+    margin-bottom: 18px;
+    border-style: solid;
+    border-color: var(--border);
+    box-shadow: 2px 2px #000;
+}
+
+
 /* 名字与时间 */
 .comt-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 6px;
 }
 
 .name {
-    font-weight: 600;
-    color: #7b4bb7;
-    font-size: 1.1em;
+    font-weight: 700;
+    color: #5A3E99;
+    /* 高级紫色，呼应你的按钮风格 */
+    font-size: 1.05rem;
 }
 
 .time {
-    font-size: 0.85em;
-    color: #888;
+    font-size: 0.85rem;
+    color: #9ca3af;
+    /* 灰色更柔和 */
 }
 
 /* 正文部分自适应高度 */
 .comt-body {
     white-space: pre-wrap;
-    font-size: 1em;
-    color: #333;
-    padding: 0 0 15px;
+    line-height: 1.75;
+    font-size: 0.96rem;
+    margin-top: 6px;
 }
 
 .custom-btn {

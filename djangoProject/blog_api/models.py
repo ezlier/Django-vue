@@ -11,13 +11,13 @@ class Visitor(models.Model):
     def __str__(self):
         return f"{self.ip} - {self.path} ({self.visit_time})"
 
-
 class Message(models.Model):
     ip = models.CharField(max_length=50, verbose_name="IP")
     text = models.TextField()
     name = models.CharField(max_length=30, verbose_name="姓名")
     time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
-
+    QQ = models.CharField(max_length=30, verbose_name="QQ", default='', blank=True)
+    email = models.CharField(max_length=30, verbose_name="email", default='', blank=True)
 
 class Bannedwords(models.Model):
     word = models.TextField()
@@ -28,3 +28,5 @@ class Comment(models.Model):
     name = models.CharField(max_length=30, verbose_name="姓名")
     time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
     article = models.CharField(max_length=200, verbose_name="所属文章")
+    QQ = models.CharField(max_length=30, verbose_name="QQ", default='', blank=True)
+    email = models.CharField(max_length=30, verbose_name="email", default='', blank=True)
