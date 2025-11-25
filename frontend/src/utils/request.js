@@ -39,7 +39,7 @@ api.interceptors.response.use(
         } catch (err) {
           console.warn('刷新 Token 失败', err)
           localStorage.clear()
-          window.location.href = '/login'
+          // window.location.href = '/login'
         }
       }
     }

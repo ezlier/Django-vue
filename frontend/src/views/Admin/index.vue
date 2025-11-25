@@ -1,31 +1,44 @@
 <template>
-  <div class="content">
-    <div class="header">
-      <div class="nav">
-        <span style="padding-right: 20px;"><RouterLink to="/">回到首页</RouterLink></span>
-        <span style="padding-right: 20px;color: black;">{{ username }}</span>
-        <button @click="logout">退出</button>
+  <div class="admin-layout">
+    <!-- 顶栏 -->
+    <header class="topbar">
+      <div class="top-left">
+        <RouterLink to="/" class="home-link">← 回到首页</RouterLink>
       </div>
-    </div>
-    <div class="row">
-      <div class="menu">
-        <p class="menu-item"><RouterLink to="/admin">首页</RouterLink></p>
-        <p class="menu-item"><RouterLink to="/admin/WebSetting">网站设置</RouterLink></p>
-        <p class="menu-item"><RouterLink to="/admin/PostSetting">文章管理</RouterLink></p>
-        <p class="menu-item"><RouterLink to="/admin/MessageSetting">留言管理</RouterLink></p>
-        <p class="menu-item"><RouterLink to="/admin/Bannedwords">违禁词管理</RouterLink></p>
+
+      <div class="top-right">
+        <ThemeToggle class="theme-toggle" />
+        <span class="username">{{ username }}</span>
+        <button class="logout-btn" @click="logout">退出登录</button>
       </div>
-      <div class="main-content">
+    </header>
+
+    <!-- 主结构 -->
+    <div class="container">
+      <!-- 侧边菜单 -->
+      <aside class="sidebar">
+        <RouterLink to="/admin" class="menu-item" active-class="active">首页</RouterLink>
+        <RouterLink to="/admin/WebSetting" class="menu-item" active-class="active">网站设置</RouterLink>
+        <RouterLink to="/admin/PostSetting" class="menu-item" active-class="active">文章管理</RouterLink>
+        <RouterLink to="/admin/MessageSetting" class="menu-item" active-class="active">留言管理</RouterLink>
+        <RouterLink to="/admin/Comments" class="menu-item" active-class="active">评论管理</RouterLink>
+        <RouterLink to="/admin/Bannedwords" class="menu-item" active-class="active">违禁词管理</RouterLink>
+      </aside>
+
+      <!-- 主内容区 -->
+      <main class="main-content">
         <RouterView />
-      </div>
+      </main>
     </div>
   </div>
 </template>
 
+
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import api from "@/utils/request"; // ✅ 使用封装好的 axios 实例
+import api from "@/utils/request";
+import ThemeToggle from '@/components/ThemeToggle.vue'
 
 const router = useRouter();
 const username = ref(localStorage.getItem("username"));
@@ -39,7 +52,6 @@ onMounted(async () => {
   }
 
   try {
-    // ✅ 用封装好的 api 自动带上 token
     const res = await api.get("admin_data/");
     message.value = res.data.message;
   } catch (error) {
@@ -57,60 +69,107 @@ const logout = () => {
 
 
 <style scoped>
-.content{
-  color: #000;
-  background-color: whitesmoke;
-  margin: 0 auto;
-  max-width: 1280px;
-  width: 100%;
+.theme-toggle{
+  background-color: var(--bg-color);
 }
 
-.header {
-  padding: 15px;
-  background-color: #dbe2ef;
-  width: 100%;
-}
-
-.nav {
-  text-align: right;
-}
-
-.row {
-  display: flex;
-  gap: 20px;
-  max-width: 1280px;
-  justify-content: center;
-  margin: 0 auto;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.menu {
-  flex: 0 0 20%;
+.admin-layout {
+  background: #f7f9fc;
   min-height: 100vh;
-  max-width: 200px;
+  display: flex;
+  flex-direction: column;
 }
 
-.menu-item{
-  padding: 10px 20px;
-  width: 100%;
-  background-color: #dbe2ef;
+/* 顶栏 */
+.topbar {
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
-.main-content {
-  padding: 20px;
-  flex: 1;
-  min-width: 0;
-  width: 100%;
-  border-radius: 8px;
+.top-left .home-link {
+  font-size: 15px;
+  color: #4a69bd;
+  text-decoration: none;
+  font-weight: 600;
 }
 
-button {
-  padding: 10px 20px;
-  background: #ff6b6b;
-  color: white;
+.top-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.username {
+  font-weight: 600;
+  color: #34495e;
+}
+
+.logout-btn {
+  padding: 8px 16px;
+  background: #ff7675;
   border: none;
-  border-radius: 6px;
+  color: white;
+  border-radius: 4px;
   cursor: pointer;
+  transition: 0.2s;
 }
+
+.logout-btn:hover {
+  background: #e84141;
+}
+
+/* 主体区域 */
+.container {
+  display: flex;
+  margin: 20px auto;
+  width: 100%;
+  max-width: 1280px;
+  gap: 20px;
+  flex: 1;
+}
+
+/* 侧边栏 */
+.sidebar {
+  width: 220px;
+  background: #ffffff;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border-radius: 8px;
+  height: fit-content;
+  position: sticky;
+  top: 80px;
+}
+
+.menu-item {
+  display: block;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  background: #f1f4f9;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #34495e;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.menu-item:hover {
+  background: #e6ebf3;
+}
+
+/* 主视图区 */
+.main-content {
+  flex: 1;
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  min-height: 400px;
+}
+
 </style>

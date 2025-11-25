@@ -20,6 +20,7 @@ onMounted(async () => {
 
 <style scoped>
 .content {
+    min-height: 100vh;
     padding: 20px;
     min-width: 0;
     border-radius: 8px;

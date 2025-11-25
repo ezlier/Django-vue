@@ -42,8 +42,8 @@ def record_visitor(request):
     user_agent = escape(request.META.get("HTTP_USER_AGENT", "")[:256])
     now = timezone.now()
 
-    # 查找该IP在最近10分钟是否访问过
-    recent_visit = Visitor.objects.filter(ip=ip, path=path, visit_time__gte=now - timedelta(minutes=10)).exists()
+    # 查找该IP在最近30分钟是否访问过
+    recent_visit = Visitor.objects.filter(ip=ip, path=path, visit_time__gte=now - timedelta(minutes=30)).exists()
     if not recent_visit:
         Visitor.objects.create(ip=ip, path=path, user_agent=user_agent)
 
@@ -110,6 +110,7 @@ def parse_markdown_file(filepath):
         "table", "thead", "tbody", "tr", "th", "td", "blockquote", "ul", "ol", "li", "a", "strong", "em"
     ]
     allowed_attrs = {
+        "*": [],
         "img": ["src", "alt", "title"],
         "a": ["href", "title", "target"]
     }
@@ -195,15 +196,17 @@ def admin_articles(request):
             data = json.loads(request.body)
             slug = data.get("slug")
             slug = os.path.basename(slug)
+            name = slug
             if not slug.endswith(".md"):
                 slug += ".md"
             file_path = os.path.join(ARTICLES_DIR, slug)
             if os.path.exists(file_path):
                 os.remove(file_path)
+                Comment.objects.filter(article=name).delete()
                 return JsonResponse({"message": "文件删除成功"})
             else:
                 return JsonResponse({"error": "文件不存在"}, status=404)
-        except Exception as e:
+        except Exception:
             return JsonResponse({"error": "操作失败"}, status=500)
 
     else:
@@ -243,7 +246,7 @@ def admin_websetting(request):
             with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
                 json.dump(body, f, ensure_ascii=False, indent=2)
             return JsonResponse({"code": 200, "msg": "更新成功"})
-        except Exception as e:
+        except Exception:
             return JsonResponse({"code": 500, "msg": f"保存失败"})
 
 
@@ -284,7 +287,14 @@ def get_message(request):
             for i in bannedwords:
                 if i['word'] in body["message"] or i['word'] in body["name"]:
                     return JsonResponse({"code": 400, "error": "内容包含违禁词"}, status=400)
-            Message.objects.create(ip=ip, time=now, text=body["message"], name=body["name"], QQ=body["QQ"], email=body["email"])
+            Message.objects.create(
+                ip=ip,
+                time=now,
+                text=escape(body["message"]),
+                name=escape(body["name"]),
+                QQ=escape(body["QQ"]),
+                email=escape(body["email"]),
+            )
             return JsonResponse({"code": 200})
         except Exception as e:
             return JsonResponse({"code": 500})
@@ -303,7 +313,7 @@ def admin_message(request):
             data = json.loads(request.body)
             Message.objects.filter(id=data["id"]).delete()
             return JsonResponse({"code": 200})
-        except Exception as e:
+        except Exception:
             return JsonResponse({"code": 500})
 
 
@@ -329,7 +339,7 @@ def bannedwords_setting(request):
 
             Bannedwords.objects.create(word=word)
             return JsonResponse({"code": 200, "msg": "添加成功"})
-        except Exception as e:
+        except Exception:
             return JsonResponse({"code": 500, "error": "error"}, status=500)
 
     elif request.method == "DELETE":
@@ -344,13 +354,14 @@ def bannedwords_setting(request):
             if deleted == 0:
                 return JsonResponse({"code": 404, "error": "未找到该违禁词"}, status=404)
             return JsonResponse({"code": 200, "msg": "删除成功"})
-        except Exception as e:
+        except Exception:
             return JsonResponse({"code": 500, "error": "error"}, status=500)
 
     else:
         return JsonResponse({"code": 405, "error": "Method Not Allowed"}, status=405)
 
 @api_view(['POST', 'GET'])
+@ratelimit(key='ip', rate='10/m', block=True)
 def get_commit(request, slug):
     if request.method == "GET":
         comments = Comment.objects.filter(article=slug).values("name", "text", "time")
@@ -360,14 +371,38 @@ def get_commit(request, slug):
             bannedwords = Bannedwords.objects.all()
             bannedwords = list(bannedwords.values("word"))
             ip = get_client_ip(request)
-            now = timezone.now()
             body = json.loads(request.body.decode("utf-8"))
             if len(body["message"]) == 0 or len(body["name"]) == 0 or len(body["message"]) > 400 or len(body["name"]) > 10:
                 return JsonResponse({"code": 400, "error": "内容不能为空"})
             for i in bannedwords:
                 if i['word'] in body["message"] or i['word'] in body["name"]:
                     return JsonResponse({"code": 400, "error": "内容包含违禁词"}, status=400)
-            Comment.objects.create(ip=ip, time=now, text=body["message"], name=body["name"], QQ=body["QQ"], email=body["email"], article=slug)
+            Comment.objects.create(
+                text=escape(body["message"]),
+                name=escape(body["name"]),
+                QQ=escape(body["QQ"]),
+                email=escape(body["email"]),
+                article=slug,
+                ip=ip,
+                time=timezone.now()
+            )
+            return JsonResponse({"code": 200})
+        except Exception:
+            return JsonResponse({"code": 500})
+
+
+@api_view(['GET', 'DELETE'])
+@permission_classes([IsAdminUser])
+def admin_Comment(request):
+    if request.method == "GET":
+        commentList = Comment.objects.all()
+        commentList = list(commentList.values("id", "ip", "time", "text", "name", "QQ", "email", "article"))
+        return JsonResponse(commentList, safe=False)
+
+    elif request.method == "DELETE":
+        try:
+            data = json.loads(request.body)
+            Comment.objects.filter(id=data["id"]).delete()
             return JsonResponse({"code": 200})
         except Exception as e:
             return JsonResponse({"code": 500})

@@ -12,6 +12,7 @@ import visitor_IP from '@/views/Admin/components/visitor_IP.vue'
 import MessageBoard from '@/views/MessageBoard/index.vue'
 import MessageSetting from '@/views/Admin/components/MessageSetting.vue'
 import Bannedwords from '@/views/Admin/components/Bannedwords.vue'
+import Comments from '@/views/Admin/components/Comments.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +44,7 @@ const router = createRouter({
         {path: 'PostSetting',name: 'PostSetting',component:PostSetting},
         {path: 'MessageSetting',name: 'MessageSetting',component:MessageSetting},
         {path: 'Bannedwords',name: 'Bannedwords',component:Bannedwords},
+        {path: 'Comments',name: 'Comment',component:Comments},
       ]
     },
     {

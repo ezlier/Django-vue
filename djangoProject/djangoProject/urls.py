@@ -18,6 +18,7 @@ urlpatterns = [
     path('api/admin_message/', views.admin_message),
     path('api/admin_websetting', views.admin_websetting),
     path('api/admin_data/', views.admin_data),
+    path('api/admin_comment/', views.admin_Comment),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])

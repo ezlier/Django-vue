@@ -3,12 +3,8 @@
     <div id="clock">
       <div v-for="(digits, groupIndex) in digitStructure" :key="groupIndex" class="digit-group">
         <div v-for="(digitList, digitIndex) in digits" :key="digitIndex" class="digit">
-          <div 
-            v-for="n in digitList" 
-            :key="n"
-            class="digit-number"
-            :class="{ bright: isActiveDigit(groupIndex, digitIndex, n) }"
-          >
+          <div v-for="n in digitList" :key="n" class="digit-number"
+            :class="{ bright: isActiveDigit(groupIndex, digitIndex, n) }">
             {{ n }}
           </div>
         </div>
@@ -24,11 +20,11 @@ export default {
   name: 'Clock',
   setup() {
     const digitStructure = [
-      [[0,1,2], [0,1,2,3,4,5,6,7,8,9]], // 小时
-      [[0,1,2,3,4,5], [0,1,2,3,4,5,6,7,8,9]], // 分钟
-      [[0,1,2,3,4,5], [0,1,2,3,4,5,6,7,8,9]]  // 秒
+      [[0, 1, 2], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]], // 小时
+      [[0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]], // 分钟
+      [[0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]]  // 秒
     ];
-    
+
     const currentTime = ref([0, 0, 0, 0, 0, 0]); // 存储时分秒的每一位数字
     let animationFrameId = null;
 
@@ -39,7 +35,7 @@ export default {
         date.getMinutes(),
         date.getSeconds()
       ].map(n => `0${n}`.slice(-2)).join('');
-      
+
       currentTime.value = timeString.split('').map(Number);
       animationFrameId = requestAnimationFrame(updateTime);
     };
@@ -70,9 +66,17 @@ export default {
 
 <style scoped>
 @keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .clock-container {
@@ -88,7 +92,10 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 10px;
+  border-radius: 8px;
+  border-style: solid;
+  border-color: var(--border);
+  box-shadow: 2px 2px #000;
 }
 
 #clock {
@@ -96,7 +103,7 @@ export default {
   width: 100%;
   height: 100%;
   font-family: 'Orbitron', sans-serif;
-  
+
 }
 
 .digit-group {
@@ -126,6 +133,4 @@ export default {
   font-size: 36px;
   transform: rotate(0deg);
 }
-
-
 </style>

@@ -114,7 +114,7 @@ const pushcomment = async () => {
                     <span class="time">{{ value.time ? value.time.slice(0, 19).replace('T', ' ') : '' }}</span>
                 </div>
                 <div class="comt-body">
-                    {{ value.text }}
+                    <p>{{ value.text }}</p>
                 </div>
             </div>
         </div>
@@ -162,6 +162,10 @@ const pushcomment = async () => {
     border-style: solid;
     border-color: var(--border);
     box-shadow: 2px 2px #000;
+    background-image: url('@/assets/img/bg5.png');
+    background-repeat: no-repeat;
+    background-position: right bottom;
+    background-size: 60px 60px;
 }
 
 
@@ -176,7 +180,6 @@ const pushcomment = async () => {
 .name {
     font-weight: 700;
     color: #5A3E99;
-    /* 高级紫色，呼应你的按钮风格 */
     font-size: 1.05rem;
 }
 
@@ -189,6 +192,8 @@ const pushcomment = async () => {
 /* 正文部分自适应高度 */
 .comt-body {
     white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     line-height: 1.75;
     font-size: 0.96rem;
     margin-top: 6px;

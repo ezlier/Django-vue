@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { useThemeStore } from '@/stores/theme' // 路径按你的项目调整
+import { useThemeStore } from '@/stores/theme'
 
 const themeStore = useThemeStore()
 

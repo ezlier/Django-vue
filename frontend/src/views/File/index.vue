@@ -72,12 +72,13 @@ function formatDate(date) {
 
 <style scoped>
 .rightcolumn {
+  min-height: 100vh;
   flex: 1;
   padding: 20px;
   min-width: 0;
   border-radius: 8px;
   background-color: var(--bg-color);
-  border-style:solid;
+  border-style: solid;
   border-color: var(--border);
   box-shadow: 2px 2px #000;
 }
@@ -205,5 +206,4 @@ function formatDate(date) {
   transition: all 0.3s ease;
   padding-right: 1rem;
 }
-
 </style>
