@@ -35,8 +35,9 @@ services:
   tunnel:
    image: cloudflare/cloudflared:latest
    environment:
-      - TUNNEL_TOKEN=eyJhIjoiYjM0NGUxM2U2YTc4ZWYwNGVhNjI3MzI0OWY3ZWRmZDUiLCJ0IjoiN2Y2NDBkZjAtNDkxYy00ZDI0LTg3MDktNDRiYzZmYzUyYzQ2IiwicyI6Ik1qZzVNREUwTnpndE9UQXpNeTAwTTJZeExXRmxZVGd0WXpsaVpHTXhPR0ZtWlRWayJ9
+      - TUNNEL_TOKEN=
    command: tunnel --no-autoupdate run
 
 volumes:
+
   mysql_data:
