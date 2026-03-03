@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: ./djangoProject
+      dockerfile: Dockerfile
+    container_name: django_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./djangoProject/media:/app/media
+
+  frontend:
+    build: ./frontend
+    container_name: vue_app
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./djangoProject/media:/usr/share/nginx/html/media:ro
+
+  db:
+    image: mysql:8
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: blog
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_ROOT_HOST: "%"
+      volumes:
+      - mysql_data:/var/lib/mysql
+
+  tunnel:
+   image: cloudflare/cloudflared:latest
+   environment:
+      - TUNNEL_TOKEN=eyJhIjoiYjM0NGUxM2U2YTc4ZWYwNGVhNjI3MzI0OWY3ZWRmZDUiLCJ0IjoiN2Y2NDBkZjAtNDkxYy00ZDI0LTg3MDktNDRiYzZmYzUyYzQ2IiwicyI6Ik1qZzVNREUwTnpndE9UQXpNeTAwTTJZeExXRmxZVGd0WXpsaVpHTXhPR0ZtWlRWayJ9
+   command: tunnel --no-autoupdate run
+
+volumes:
+  mysql_data:
