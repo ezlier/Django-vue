@@ -1,0 +1,87 @@
+@font-face {
+  font-family: 'MyFont';
+  /* 给字体起一个名字 */
+  src: url('./fonts/龚帆乐淘体.ttf') format('woff2'),
+    url('./fonts/龚帆乐淘体.ttf') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MyFont';
+  src: url('./fonts/龚帆乐淘体.ttf') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "文楷";
+  src: url('./fonts/LXGWWenKaiMono-Medium.ttf');
+}
+
+:root {
+  --nav-color:rgba(255, 255, 255, 0.1);
+  --bg-content:rgba(204, 204, 204, 0.9);
+  --bg-color: whitesmoke;
+  --text-color: #000000;
+  --el-color-primary: #ffb6b9;
+  --el-color-primary-light-3: #ffb6b9;
+  --el-color-primary-light-5: #ffb6b9;
+  --el-color-primary-light-7: #ffb6b9;
+  --el-color-primary-light-8: #ffb6b9;
+  --el-color-primary-light-9: #ffb6b9;
+  --el-color-primary-dark-2: #ffb6b9;
+  --el-bg-color: whitesmoke;
+
+  --border-radius: 5px;
+  --border: 2px solid #323232;
+  --box-shadow: 4px 4px #323232;
+}
+
+html.dark {
+  --nav-color:#0000008c;
+  --bg-content:rgba(75, 55, 55, 0);
+  --bg-color: #242424;
+  --text-color: #EEEEEE;
+  --el-color-primary: #ffb6b9;
+  --el-color-primary-light-3: #ffb6b9;
+  --el-color-primary-light-5: #ffb6b9;
+  --el-color-primary-light-7: #ffb6b9;
+  --el-color-primary-light-8: #ffb6b9;
+  --el-color-primary-light-9: #ffb6b9;
+  --el-color-primary-dark-2: #ffb6b9;
+  --el-bg-color: #1e1e1e;
+}
+
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+  font-family: 'MyFont', sans-serif;
+  font-size: 17px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px); /* 可选：轻微上移，更有层次感 */
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* 动画：进入视口后显示 */
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
