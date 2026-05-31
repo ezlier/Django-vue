@@ -1,10 +1,13 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import path
+from django.urls import path, include
 from rest_framework_simplejwt.views import TokenRefreshView
 from blog_api import views
 
 urlpatterns = [
+    # ═══════════════════════════════════════════════════════════════
+    # v1 路由（保持不变，仅维护，不再新增功能）
+    # ═══════════════════════════════════════════════════════════════
     path('api/login/', views.loginView),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/updateUser/', views.UserUpdate),
@@ -19,7 +22,7 @@ urlpatterns = [
     path('api/admin/articles/', views.adminGetArticles),
     path('api/admin/articles/<int:pk>/status/', views.updateArticleStatus),
     path('api/admin/articles/<path:slug>/', views.adminGetArticle),
-    
+
     path('api/getTags/', views.getTags),
     path('api/updateTag/<int:id>/', views.updateTag),
     path('api/deleteTag/<int:id>/', views.deleteTag),
@@ -38,17 +41,19 @@ urlpatterns = [
     path('api/get_websetting', views.getWebSetting),
     path("api/visitor_stats/", views.visitor_stats),
 
-
     path('api/bannedwords/', views.bannedwordsSetting),
     path('api/create_bannedword/', views.createBannedword),
     path('api/delete_bannedword/<int:id>/', views.deleteBannedword),
 
-
     path('api/admin_websetting', views.adminWebsetting),
     path('api/admin_audit/logs/', views.get_admin_audit_logs),
-    path('api/admin_audit/export/', views.export_admin_audit_logs),
     path('api/admin_audit/statistics/', views.get_admin_audit_statistics),
     path('api/admin_data/', views.adminData),
 
+    # ═══════════════════════════════════════════════════════════════
+    # v2 路由（RESTful 风格，kebab-case 命名，所有新功能在此开发）
+    # ═══════════════════════════════════════════════════════════════
+    path('api/v2/', include('blog_api.urls')),
+    path('api/v2/token/refresh/', TokenRefreshView.as_view(), name='v2-token-refresh'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

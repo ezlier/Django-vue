@@ -1,6 +1,6 @@
 import functools
 from django.contrib.auth import get_user_model
-from blog_api.services.admin.auditService import AuditService
+from blog_api.v1.services.admin.auditService import AuditService
 from .models import AdminAuditLog
 
 User = get_user_model()

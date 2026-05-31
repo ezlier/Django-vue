@@ -50,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'blog_api.middleware.VisitorMiddleware',
+    'blog_api.v2.middleware.GlobalExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'djangoProject.urls'
@@ -76,34 +77,34 @@ WSGI_APPLICATION = 'djangoProject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',  # 数据库类型
-        'NAME': 'blog',                      # 数据库名
-        'USER': 'root',                        # 用户名
-        'PASSWORD': '123456',                     # 密码
-        'HOST': 'db',                   # 主机
-        'PORT': '3306',                        # 端口
-        'OPTIONS': {
-            'charset': 'utf8mb4',              # 支持表情和多语言
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
-    }
-}
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',  # 数据库类型
-#         'NAME': 'aaaaa',                      # 数据库名
+#         'NAME': 'blog',                      # 数据库名
 #         'USER': 'root',                        # 用户名
-#         'PASSWORD': '123',                     # 密码
-#         'HOST': '127.0.0.1',                   # 主机
+#         'PASSWORD': '123456',                     # 密码
+#         'HOST': 'db',                   # 主机
 #         'PORT': '3306',                        # 端口
 #         'OPTIONS': {
 #             'charset': 'utf8mb4',              # 支持表情和多语言
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
 #         },
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',  # 数据库类型
+        'NAME': 'aaaaa',                      # 数据库名
+        'USER': 'root',                        # 用户名
+        'PASSWORD': '123',                     # 密码
+        'HOST': '127.0.0.1',                   # 主机
+        'PORT': '3306',                        # 端口
+        'OPTIONS': {
+            'charset': 'utf8mb4',              # 支持表情和多语言
+        },
+    }
+}
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 # Password validation
@@ -155,6 +156,13 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
+    'DEFAULT_FILTER_BACKENDS': [
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
 }
 
 
