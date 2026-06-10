@@ -164,3 +164,16 @@ class AdminArticleStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = ["is_draft"]
+
+
+class AdminArticleUploadSerializer(serializers.ModelSerializer):
+    """Admin 上传文章 —— MD 文件直传"""
+    tags = serializers.ListField(
+        child=serializers.CharField(), required=False, allow_empty=True
+    )
+
+    class Meta:
+        model = Article
+        fields = ["title", "md_file", "cover", "tags", "is_draft"]
+
+    validate_title = validate_title

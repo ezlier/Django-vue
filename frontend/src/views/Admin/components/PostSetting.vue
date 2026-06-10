@@ -98,8 +98,8 @@ const fetchArticles = async () => {
     params.is_draft = isDraftFilter.value
   }
   const res = await getAdminArticles(params);
-  articles.value = res.data.data.results
-  total.value = res.data.data.count
+  articles.value = res.data.data.results || res.data.data
+  total.value = res.data.data.count || 0
 };
 
 const handlePageChange = (page) => {
@@ -116,7 +116,7 @@ const togglePublish = async (row) => {
       cancelButtonText: '取消',
       type: 'warning'
     })
-    await updateArticleStatus(row.id, newStatus)
+    await updateArticleStatus(row.slug, newStatus)
     ElMessage.success(`${action}成功`)
     fetchArticles()
   } catch (err) {
@@ -137,7 +137,7 @@ const deleteRow = async (row) => {
       cancelButtonText: '取消',
       type: 'warning'
     })
-    await deleteArticle2(row.id)
+    await deleteArticle2(row.slug || row.id)
     ElMessage.success(`已删除：${row.title}`)
     fetchArticles()
   } catch (err) {

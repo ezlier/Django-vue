@@ -1,7 +1,7 @@
 import api from "@/utils/request"
 
-export const getAuditLogs = (params = {}) => {
-  return api.get('/admin_audit/logs/', {
+export const getAuditLogs = (params = {}) =>
+  api.get('/admin/audit/logs/', {
     params: {
       limit: params.limit || 20,
       offset: params.offset || 0,
@@ -11,18 +11,11 @@ export const getAuditLogs = (params = {}) => {
       start_date: params.start_date || undefined,
       end_date: params.end_date || undefined,
       target_model: params.target_model || undefined,
-      search_text: params.search_text || undefined
-    }
+      search_text: params.search_text || undefined,
+    },
   })
-}
 
-export const exportAuditLogs = (params = {}) => {
-  const queryString = new URLSearchParams(params).toString()
-  window.open(`/api/admin_audit/export/?${queryString}`, '_blank')
-}
+// 审计日志导出已移除（v2 不再提供 CSV 导出）
 
-export const getAuditStatistics = (params = {}) => {
-  return api.get('/admin_audit/statistics/', {
-    params
-  })
-}
+export const getAuditStatistics = (params = {}) =>
+  api.get('/admin/audit/statistics/', { params })

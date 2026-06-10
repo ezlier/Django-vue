@@ -19,8 +19,8 @@ export const useArticleStore = defineStore("article", {
       this.pageSize = pageSize
 
       const res = await getArticles2({ page, page_size: pageSize })
-      this.articleList = res.data.data.results
-      this.articlesLength = res.data.data.count
+      this.articleList = res.data.data.results || res.data.data
+      this.articlesLength = res.data.data.count || 0
     }
   }
 })

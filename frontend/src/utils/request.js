@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: '/api/',
+  baseURL: '/api/v2/',
   withCredentials: false
 })
 
@@ -27,8 +27,19 @@ api.interceptors.response.use(
 
       if (refreshToken) {
         try {
-          const res = await axios.post('/api/token/refresh/', { refresh: refreshToken })
-          const newAccess = res.data.access
+          const res = await axios.post('/api/v2/token/refresh/', { refresh: refreshToken })
+          const tokenData = res.data
+          let newAccess = null
+
+          // v1 返回 { access: "..." }，v2 返回 { code, data: { token: "..." } }
+          if (tokenData.data && tokenData.data.token) {
+            newAccess = tokenData.data.token
+            if (tokenData.data.refresh) {
+              localStorage.setItem('refresh_token', tokenData.data.refresh)
+            }
+          } else if (tokenData.access) {
+            newAccess = tokenData.access
+          }
           localStorage.setItem('access_token', newAccess)
           api.defaults.headers.common['Authorization'] = `Bearer ${newAccess}`
           originalRequest.headers['Authorization'] = `Bearer ${newAccess}`
@@ -37,6 +48,9 @@ api.interceptors.response.use(
           localStorage.clear()
           window.location.href = '/login'
         }
+      } else {
+        localStorage.clear()
+        window.location.href = '/login'
       }
     }
 

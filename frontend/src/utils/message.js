@@ -1,17 +1,18 @@
 import api from "@/utils/request"
 
-export const upMessage = (data) => {
-  return api.post("/create_message/", data)
-}
+export const getMessage = () =>
+  api.get("/user/message/")
 
-export const getMessage = () => {
-  return api.get("/message/")
-}
+export const upMessage = (data) =>
+  api.post("/user/message/", data)
 
-export const getadminMessage = () => {
-  return api.get("/admin_message/")
-}
 
-export const deleteMessage = (id) => {
-  return api.delete(`/delete_message/${id}/`)
-}
+// ── Admin ───────────────────────────────────────
+export const getadminMessage = () =>
+  api.get("/admin/message/")
+
+export const deleteMessage = (id) =>
+  api.delete(`/admin/message/${id}/`)
+
+export const batchDeleteMessages = (ids) =>
+  api.delete(`/admin/message/batch-delete/`, { data: { ids } })

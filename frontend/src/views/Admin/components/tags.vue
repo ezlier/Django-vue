@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import { getTags, updateTag, deleteTag } from '@/utils/article';
+import { getAdminTags, updateTag, deleteTag } from '@/utils/article';
 import { onMounted, ref, reactive } from 'vue';
 import { ElMessage } from 'element-plus';
 
@@ -47,7 +47,7 @@ const editForm = reactive({
 
 // 获取数据
 const loadTags = async () => {
-    const res = await getTags();
+    const res = await getAdminTags();
     tags.value = res.data.data;
 }
 
@@ -65,7 +65,7 @@ const handleEdit = (row) => {
 
 // 5. 提交修改
 const submitEdit = async () => {
-    await updateTag(editForm.id, { name: editForm.name }); 
+    await updateTag(editForm.id, editForm.name);
     
     ElMessage.success('修改成功');
     dialogVisible.value = false;

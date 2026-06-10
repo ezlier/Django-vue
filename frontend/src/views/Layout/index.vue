@@ -25,141 +25,8 @@ const tagsStore = useTagsStore()
 const route = useRoute();
 const themeStore = useThemeStore();
 
-const screen1Ref = ref(null)
 const loadingRef = ref(null);
 
-let isScrolling = false
-
-let screen1Height = 0
-
-// 核心滚动处理函数
-const handleWheel = (e) => {
-  // 1. 获取滚动位置和第一屏高度
-  const scrollTop = window.scrollY
-  screen1Height = screen1Ref.value?.offsetHeight || window.innerHeight
-
-  // 2. 仅在“第一屏范围内”触发整屏切换
-  if (scrollTop < screen1Height) {
-    e.preventDefault() // 阻止第一屏的原生滚动
-    if (isScrolling) return
-    isScrolling = true
-
-    // 向下滚动 → 跳转到第二屏顶部
-    if (e.deltaY > 0) {
-      // 滚动到第二屏顶部（第一屏高度即为第二屏的 offsetTop）
-      window.scrollTo({
-        top: screen1Height,
-        behavior: 'smooth'
-      })
-    } else {
-      // 向上滚动 → 只有在不在顶部时才滚动到第一屏顶部
-      if (scrollTop > 0) {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        })
-      }
-    }
-
-    setTimeout(() => {
-      isScrolling = false
-    }, 800)
-  }
-
-  // 3. 第二屏范围内：放行原生滚动（仅在第二屏顶部向上滚动时，回到第一屏）
-  if (scrollTop >= screen1Height && e.deltaY < 0) {
-    // 检查是否在第二屏顶部附近（阈值20像素）
-    const threshold = 20
-    if (scrollTop - screen1Height < threshold) {
-      e.preventDefault()
-      if (isScrolling) return
-      isScrolling = true
-
-      // 从第二屏顶部向上滚动 → 回到第一屏
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      })
-
-      setTimeout(() => {
-        isScrolling = false
-      }, 800)
-    }
-  }
-}
-
-// 触摸事件处理
-const touchStartY = ref(0)
-const touchEndY = ref(0)
-const isTouching = ref(false)
-const touchThreshold = 20 // 最小滑动距离阈值（像素）
-
-const handleTouchStart = (e) => {
-  touchStartY.value = e.touches[0].clientY
-  isTouching.value = true
-}
-
-const handleTouchEnd = (e) => {
-  if (!isTouching.value) return
-  
-  touchEndY.value = e.changedTouches[0].clientY
-  isTouching.value = false
-  
-  const deltaY = touchEndY.value - touchStartY.value
-  const scrollTop = window.scrollY
-  screen1Height = screen1Ref.value?.offsetHeight || window.innerHeight
-  
-  // 滑动距离太小，忽略
-  if (Math.abs(deltaY) < touchThreshold) return
-  
-  // 防止冲突：如果正在滚动中，忽略触摸事件
-  if (isScrolling) return
-  isScrolling = true
-  
-  // 向下滑动 (deltaY > 0 表示手指向下移动)
-  if (deltaY > 0) {
-    // 第一屏范围内：向下滑动跳转到第二屏
-    if (scrollTop < screen1Height) {
-      window.scrollTo({
-        top: screen1Height,
-        behavior: 'smooth'
-      })
-    }
-    // 第二屏范围内：向下滑动保持原生滚动（不处理）
-  } else {
-    // 向上滑动 (deltaY < 0 表示手指向上移动)
-    // 第一屏范围内：向上滑动回到顶部（如果不是在顶部）
-    if (scrollTop < screen1Height) {
-      if (scrollTop > 0) {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        })
-      }
-    } else {
-      // 第二屏范围内：仅在顶部附近向上滑动才回到第一屏
-      const threshold = 20
-      if (scrollTop - screen1Height < threshold) {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        })
-      }
-    }
-  }
-  
-  setTimeout(() => {
-    isScrolling = false
-  }, 800)
-}
-
-// 监听窗口大小变化，更新第一屏高度
-const handleResize2 = () => {
-  screen1Height = screen1Ref.value?.offsetHeight || window.innerHeight
-}
-
-
-// 添加窗口宽度响应式变量
 const windowWidth = ref(window.innerWidth);
 
 // 监听窗口大小变化
@@ -174,15 +41,8 @@ onMounted(() => {
   articleStore.fetchArticles()
   WebSettingStore.fetchWebSetting()
   tagsStore.fetchTags()
-  screen1Height = screen1Ref.value?.offsetHeight || window.innerHeight
-  window.addEventListener('wheel', handleWheel, { passive: false })
-  window.addEventListener('resize', handleResize2)
-  // 添加触摸事件支持
-  window.addEventListener('touchstart', handleTouchStart, { passive: true })
-  window.addEventListener('touchend', handleTouchEnd, { passive: true })
 
   window.addEventListener('load', () => {
-    // 调用 Loading 组件的 hide() 方法
     if (loadingRef.value) {
       loadingRef.value.setResourceLoaded();
     }
@@ -193,11 +53,6 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('visibilitychange', handleVisibilityChange);
   window.removeEventListener('resize', handleResize);
-  window.removeEventListener('wheel', handleWheel)
-  window.removeEventListener('resize', handleResize2)
-  // 移除触摸事件监听
-  window.removeEventListener('touchstart', handleTouchStart)
-  window.removeEventListener('touchend', handleTouchEnd)
 });
 
 // 动态计算 header 高度
@@ -260,10 +115,10 @@ const handleVisibilityChange = () => {
   <navbar />
 
   <main class="main-content">
-    <div ref="screen1Ref" class="header" :style="{ height: headerHeight }">
+    <div class="header" :style="{ height: headerHeight }">
       <Welcome v-if="route.name === 'Home'" />
     </div>
-    <div ref="screen2Ref" class="content">
+    <div class="content">
       <div class="row">
         <div class="leftcolumn">
             <About class="fade-in" v-fade-in />
