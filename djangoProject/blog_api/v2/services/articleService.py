@@ -19,6 +19,7 @@ class ArticleService:
 
     def __init__(self, article_repo=None, tag_repo=None):
         self.articles = article_repo if article_repo is not None else Article.objects
+        self._model = self.articles.model
         self.tags = tag_repo if tag_repo is not None else Tag.objects
 
     # ── 查询 ──────────────────────────────────────────────────────
@@ -52,7 +53,15 @@ class ArticleService:
     @transaction.atomic
     def create_from_form(self, title, mdfile, cover=None, tags=None, is_draft=False):
         """从表单创建文章（title + md 文本 + 可选 cover）"""
-        article = self.articles.model(title=title, is_draft=is_draft)
+        article = self._model(title=title, is_draft=is_draft)
+        # 显式生成 slug 并检查唯一性，不依赖模型 save() 的自动生成
+        base_slug = slugify(title, allow_unicode=True) or "article"
+        slug = base_slug
+        counter = 1
+        while self.articles.filter(slug=slug).exists():
+            slug = f"{base_slug}-{counter}"
+            counter += 1
+        article.slug = slug
 
         md_file = ContentFile(mdfile.encode("utf-8"))
         md_filename = f"{slugify(title, allow_unicode=True)}.md"
@@ -71,7 +80,15 @@ class ArticleService:
     @transaction.atomic
     def create_from_upload(self, title, md_file, cover=None, tags=None, is_draft=False):
         """从文件上传创建文章"""
-        article = self.articles.model(title=title, is_draft=is_draft)
+        article = self._model(title=title, is_draft=is_draft)
+        # 显式生成 slug 并检查唯一性
+        base_slug = slugify(title, allow_unicode=True) or "article"
+        slug = base_slug
+        counter = 1
+        while self.articles.filter(slug=slug).exists():
+            slug = f"{base_slug}-{counter}"
+            counter += 1
+        article.slug = slug
 
         article.cover = cover if cover else None
 

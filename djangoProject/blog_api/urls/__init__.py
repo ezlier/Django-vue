@@ -5,7 +5,9 @@ Admin — Article, Tag, Comment, Message, BannedWord 使用 Router 自动注册�
         WebSetting, Visitor, Audit, Dashboard, Auth 保留手动路由。
 User  — Article, Comment, Message, WebSetting, About 使用 Router 自动注册。
 
-非 ViewSet 的剩余资源（visitor, audit, dashboard, login）保留在 admin_urls.py。
+重要：自定义路由（comment nested、message、websetting、about）必须放在
+Router 之前，否则 Router 生成的 article/{slug}/ 会先匹配，
+导致 POST /article/{slug}/comment/ 被当成 article 详情返回 405。
 """
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
@@ -40,11 +42,11 @@ user_router.register(r'article', UserArticleViewSet, basename='user-article')
 app_name = 'v2'
 
 urlpatterns = [
-    # Router 生成的资源路由
+    # 自定义路由必须放在 Router 之前（Django 按顺序匹配）
+    path('user/', include('blog_api.urls.user_urls')),
+    path('admin/', include('blog_api.urls.admin_urls')),
+
+    # Router 生成的路由
     path('admin/', include(admin_router.urls)),
     path('user/', include(user_router.urls)),
-
-    # WebSetting, Comment/Message nested, WebSetting/About 走自定义路由
-    path('admin/', include('blog_api.urls.admin_urls')),
-    path('user/', include('blog_api.urls.user_urls')),
 ]

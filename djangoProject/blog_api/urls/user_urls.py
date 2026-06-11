@@ -19,21 +19,15 @@ urlpatterns = [
     # GET  /user/article/{slug}/comment/
     # POST /user/article/{slug}/comment/
     path('article/<slug:slug>/comment/',
-         UserCommentViewSet.as_view({"get": "list_by_article"}),
-         name='user-article-comment-list'),
-    path('article/<slug:slug>/comment/',
-         UserCommentViewSet.as_view({"post": "create_comment"}),
-         name='user-article-comment-create'),
+         UserCommentViewSet.as_view({"get": "list_by_article", "post": "create_comment"}),
+         name='user-article-comment'),
 
     # ── Message ───────────────────────────────────────────────────
     # GET  /user/message/
     # POST /user/message/
     path('message/',
-         UserMessageViewSet.as_view({"get": "messages"}),
-         name='user-message-list'),
-    path('message/',
-         UserMessageViewSet.as_view({"post": "create_message"}),
-         name='user-message-create'),
+         UserMessageViewSet.as_view({"get": "messages", "post": "create_message"}),
+         name='user-message'),
 
     # ── WebSetting ────────────────────────────────────────────────
     path('websetting/',

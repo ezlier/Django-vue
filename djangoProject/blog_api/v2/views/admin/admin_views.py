@@ -157,6 +157,7 @@ class AdminMessageViewSet(viewsets.ModelViewSet):
 
 class AdminBannedWordViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
+    lookup_field = "pk"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -181,7 +182,7 @@ class AdminBannedWordViewSet(viewsets.ModelViewSet):
         return ApiResponse.success(msg="创建成功")
 
     def destroy(self, request, *args, **kwargs):
-        self.bannedword_service.delete(kwargs["id"])
+        self.bannedword_service.delete(kwargs["pk"])
         return ApiResponse.success(msg="删除成功")
 
     @action(detail=False, methods=["delete"], url_path="batch-delete")
