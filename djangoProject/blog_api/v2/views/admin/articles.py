@@ -40,7 +40,7 @@ class AdminArticleViewSet(viewsets.ModelViewSet):
     POST   /article/upload/       → MD 文件上传创建
     PATCH  /article/{slug}/status/ → 更新发布状态
     """
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAdminUser]
     lookup_field = "slug"
     lookup_value_regex = r"[^/]+"
 

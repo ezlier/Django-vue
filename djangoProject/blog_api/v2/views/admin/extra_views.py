@@ -66,10 +66,13 @@ class AdminVisitorViewSet(viewsets.GenericViewSet):
         queryset = self.visitor_service.list_visitors()
         page = self.paginate_queryset(queryset)
         if page is not None:
+            serializer = VisitorListSerializer(page, many=True)
             return ApiResponse.success(
-                self.paginator.get_paginated_response(page).data
+                {"results": serializer.data,
+                 "count": self.paginator.page.paginator.count},
             )
-        return ApiResponse.success(list(queryset))
+        serializer = VisitorListSerializer(queryset, many=True)
+        return ApiResponse.success(serializer.data)
 
 
 # ── Audit ─────────────────────────────────────────────────────────
@@ -107,7 +110,7 @@ class AdminAuditViewSet(viewsets.GenericViewSet):
 # ── Dashboard ─────────────────────────────────────────────────────
 
 class AdminDashboardViewSet(viewsets.GenericViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAdminUser]
 
     @action(detail=False, methods=["get"], url_path="dashboard")
     def dashboard(self, request):

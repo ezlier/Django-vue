@@ -26,7 +26,7 @@ from blog_api.v1.views.response import ApiResponse
 # ── Tag ───────────────────────────────────────────────────────────
 
 class AdminTagViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAdminUser]
     lookup_field = "id"
 
     def __init__(self, **kwargs):
@@ -74,6 +74,7 @@ class AdminTagViewSet(viewsets.ModelViewSet):
 class AdminCommentViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     http_method_names = ["get", "delete"]
+    lookup_field = "pk"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -116,6 +117,7 @@ class AdminCommentViewSet(viewsets.ModelViewSet):
 class AdminMessageViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     http_method_names = ["get", "delete"]
+    lookup_field = "pk"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -137,7 +139,7 @@ class AdminMessageViewSet(viewsets.ModelViewSet):
         return ApiResponse.success(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
-        self.message_service.delete(kwargs["id"])
+        self.message_service.delete(kwargs["pk"])
         return ApiResponse.success(msg="删除成功")
 
     @action(detail=False, methods=["delete"], url_path="batch-delete")
