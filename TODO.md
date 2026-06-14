@@ -187,7 +187,7 @@ class ArticleService:
 ### 第四阶段：功能完善
 - [x] 完善排序、搜索功能
 - [x] 补充嵌套路由（评论作为文章的子资源）
-- [x] 补充批量操作接口
+- [x] 补充批量操作接口（article/comment/message/bannedword 的 batch-delete）
 - [x] ViewSet + Router 自动生成路由，减少手动配置
 - [x] 补充错误处理中间件，捕获全局异常
 
