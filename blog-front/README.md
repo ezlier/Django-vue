@@ -1,42 +1,27 @@
-# blog-front
+# Blog 前端
 
-This template should help get you started developing with Vue 3 in Vite.
+按 TODO.md 规划完成：api 层、路由、状态管理、布局组件。
 
-## Recommended IDE Setup
-
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+## 目录结构
 ```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
+src/
+├── api/                # 接口封装
+│   ├── request.ts      # axios 实例 + token 拦截器
+│   ├── auth.ts         # 登录 / Token 刷新 / 用户更新
+│   ├── admin.ts        # Admin 全套接口
+│   └── user.ts         # User 公开接口
+├── layouts/
+│   ├── FrontLayout.vue # 前台布局 (Navbar + RouterView + Footer)
+│   └── AdminLayout.vue # 后台布局 (Sidebar + Topbar + RouterView)
+├── router/
+│   ├── routes.ts       # 路由配置 (懒加载，前后台分离)
+│   └── index.ts        # 路由实例 + 全局鉴权守卫
+├── stores/
+│   ├── auth.ts         # 认证 (login/logout/updateUser)
+│   ├── article.ts      # 文章 + 标签
+│   ├── tag.ts          # Admin 标签 CRUD
+│   └── ui.ts           # 主题 / 侧栏 / 网站配置
+├── types/
+│   └── index.ts        # 通用类型定义
+└── views/              # 页面 (占位，待填充)
 ```

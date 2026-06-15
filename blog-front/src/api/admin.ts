@@ -1,4 +1,5 @@
 import api from './request'
+import type { AxiosProgressEvent } from 'axios'
 
 // ═══════════ Admin 接口 ═══════════
 
@@ -14,7 +15,7 @@ export const createArticle = (formData: FormData) =>
     headers: { 'Content-Type': 'multipart/form-data' },
   })
 
-export const uploadArticle = (formData: FormData, onProgress?: (e: ProgressEvent) => void) =>
+export const uploadArticle = (formData: FormData, onProgress?: (e: AxiosProgressEvent) => void) =>
   api.post('admin/article/upload/', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
     onUploadProgress: onProgress,

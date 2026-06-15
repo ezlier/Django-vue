@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { getArticles, getArticle, getTags } from '@/api/user'
-import type { Article } from '@/types'
 
 export const useArticleStore = defineStore('article', () => {
   const articles = ref<Article[]>([])
@@ -14,8 +13,9 @@ export const useArticleStore = defineStore('article', () => {
     loading.value = true
     try {
       const res = await getArticles({ page, page_size: pageSize })
-      articles.value = res.data.data.results || res.data.data
-      total.value = res.data.data.count || 0
+      const data = res.data.data
+      articles.value = data.results || data
+      total.value = data.count || 0
     } finally {
       loading.value = false
     }
