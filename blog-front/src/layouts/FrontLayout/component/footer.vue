@@ -1,17 +1,13 @@
 <template>
-    <footer class="front-footer">
-        <p>{{ ui.webSetting?.footer_text1 || '' }}</p>
-        <p>{{ ui.webSetting?.footer_text2 || '' }}</p>
-    </footer>
-</template>
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <RouterLink to="/home" class="footer__logo">
+          {{ ui.webSetting?.web_name || 'Blog' }}
+        </RouterLink>
+        <p class="footer__tagline">
+          {{ ui.webSetting?.footer_text1 || '记录思考，分享生活' }}
+        </p>
+      </div>
 
-<script setup lang="ts">
-import { onMounted } from 'vue'
-import { useUiStore } from '@/stores/ui'
-
-const ui = useUiStore()
-
-onMounted(() => {
-    ui.fetchWebSetting()
-})
-</script>
+      <di

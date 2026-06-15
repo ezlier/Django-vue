@@ -30,8 +30,8 @@ function onScroll() {
 }
 
 onMounted(() => {
-  ui.fetchWebSetting()
   window.addEventListener('scroll', onScroll, { passive: true })
+  onScroll() // 初始化滚动状态
 })
 
 onUnmounted(() => {
@@ -151,6 +151,4 @@ onUnmounted(() => {
 }
 
 .theme-icon {
-  line-height: 1;
-}
-</style>
+  line-height:

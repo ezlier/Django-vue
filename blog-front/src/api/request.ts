@@ -19,6 +19,24 @@ api.interceptors.request.use(
   (error) => Promise.reject(error),
 )
 
+// 开发模式下打印请求日志
+if (import.meta.env.DEV) {
+  api.interceptors.request.use((config) => {
+    console.log(`[API] ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`, config.params || config.data)
+    return config
+  })
+  api.interceptors.response.use(
+    (res) => {
+      console.log(`[API] ${res.config.method?.toUpperCase()} ${res.config.url} →`, res.data)
+      return res
+    },
+    (err) => {
+      console.error(`[API] ${err.config?.method?.toUpperCase()} ${err.config?.url} →`, err.response?.status, err.response?.data)
+      return Promise.reject(err)
+    }
+  )
+}
+
 // ── 响应拦截器：统一错误处理 + token 自动刷新 ────────────────────
 let isRefreshing = false
 let refreshSubscribers: Array<(token: string) => void> = []
@@ -74,31 +92,4 @@ api.interceptors.response.use(
           if (newAccess) {
             localStorage.setItem('access_token', newAccess)
             api.defaults.headers.common['Authorization'] = `Bearer ${newAccess}`
-            originalRequest.headers['Authorization'] = `Bearer ${newAccess}`
-            onRefreshed(newAccess)
-            isRefreshing = false
-            return api(originalRequest)
-          }
-        } catch {
-          // refresh 也过期了
-        }
-      }
-
-      isRefreshing = false
-      localStorage.clear()
-      window.location.href = '/login'
-      return Promise.reject(error)
-    }
-
-    // 网络错误或其他错误
-    if (!error.response) {
-      ElMessage.error('网络连接失败')
-    } else if (error.response.status >= 500) {
-      ElMessage.error('服务器内部错误')
-    }
-
-    return Promise.reject(error)
-  },
-)
-
-export default api
+            originalRequest.headers['Authorization'] = `Bear

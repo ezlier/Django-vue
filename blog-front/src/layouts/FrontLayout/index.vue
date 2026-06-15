@@ -23,16 +23,25 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
+import { useUiStore } from '@/stores/ui'
 import Navbar from './component/navbar.vue';
 import Footer from './component/footer.vue';
 import Header from './component/header.vue';
 import Sidebar from './component/Sidebar.vue';
+
+const ui = useUiStore()
+
+onMounted(() => {
+  ui.fetchWebSetting()
+})
 </script>
 
 <style scoped>
 .front-layout {
   min-height: 100dvh;
-  background: var(--color-background);
+  background: var(--color-background-soft);
+
 }
 
 .front-main {
@@ -44,27 +53,12 @@ import Sidebar from './component/Sidebar.vue';
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
+  min-height: 100dvh;
 }
 
-.leftcolumn {
-  flex: 0 0 260px;
-  border-radius: 12px;
-}
-
+.leftcolumn,
 .rightcolumn {
-  flex: 1;
-  min-width: 0;
   border-radius: 12px;
-}
-
-@media (max-width: 768px) {
-  .front-main {
-    flex-direction: column;
-    padding: 16px;
-  }
-  .leftcolumn {
-    flex: none;
-    width: 100%;
-  }
-}
-</style>
+  border: var(--border);
+  box-shadow: var(--box-shadow);
+  bor
