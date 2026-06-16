@@ -17,8 +17,11 @@ class UserCommentListSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "text", "time"]
         read_only_fields = ["id", "time"]
 
-    validate_name = validate_name
-    validate_text = validate_text
+    def validate_name(self, value):
+        return validate_name(value)
+
+    def validate_text(self, value):
+        return validate_text(value)
 
 
 class UserCommentCreateSerializer(serializers.ModelSerializer):
@@ -26,8 +29,11 @@ class UserCommentCreateSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ["name", "text", "QQ", "email"]
 
-    validate_name = validate_name
-    validate_text = validate_text
+    def validate_name(self, value):
+        return validate_name(value)
+
+    def validate_text(self, value):
+        return validate_text(value)
 
 
 # ── Message ───────────────────────────────────────────────────────
@@ -40,8 +46,11 @@ class UserMessageListSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "text", "time"]
         read_only_fields = ["id", "time"]
 
-    validate_name = validate_name
-    validate_text = validate_text
+    def validate_name(self, value):
+        return validate_name(value)
+
+    def validate_text(self, value):
+        return validate_text(value)
 
 
 class UserMessageCreateSerializer(serializers.ModelSerializer):
@@ -49,8 +58,11 @@ class UserMessageCreateSerializer(serializers.ModelSerializer):
         model = Message
         fields = ["name", "text", "QQ", "email"]
 
-    validate_name = validate_name
-    validate_text = validate_text
+    def validate_name(self, value):
+        return validate_name(value)
+
+    def validate_text(self, value):
+        return validate_text(value)
 
 
 # ── WebSetting ────────────────────────────────────────────────────

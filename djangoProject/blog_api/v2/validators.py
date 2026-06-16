@@ -34,6 +34,15 @@ def validate_title(value, field_label="标题"):
     return value
 
 
+def validate_title_optional(value, field_label="标题"):
+    """校验标题：允许 None，非空时校验"""
+    if value is None:
+        return value
+    if not value.strip():
+        raise serializers.ValidationError(f"{field_label}不能为空")
+    return value
+
+
 def validate_word(value):
     """校验违禁词：非空"""
     if not value.strip():

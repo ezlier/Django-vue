@@ -5,6 +5,9 @@ const api = axios.create({
   baseURL: '/api/v2/',
   timeout: 30000,
   withCredentials: false,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 })
 
 // ── 请求拦截器：自动附加 token ───────────────────────────────────
@@ -92,4 +95,31 @@ api.interceptors.response.use(
           if (newAccess) {
             localStorage.setItem('access_token', newAccess)
             api.defaults.headers.common['Authorization'] = `Bearer ${newAccess}`
-            originalRequest.headers['Authorization'] = `Bear
+            originalRequest.headers['Authorization'] = `Bearer ${newAccess}`
+            onRefreshed(newAccess)
+            isRefreshing = false
+            return api(originalRequest)
+          }
+        } catch {
+          // refresh 也过期了
+        }
+      }
+
+      isRefreshing = false
+      localStorage.clear()
+      window.location.href = '/login'
+      return Promise.reject(error)
+    }
+
+    // 网络错误或其他错误
+    if (!error.response) {
+      ElMessage.error('网络连接失败')
+    } else if (error.response.status >= 500) {
+      ElMessage.error('服务器内部错误')
+    }
+
+    return Promise.reject(error)
+  },
+)
+
+export default api

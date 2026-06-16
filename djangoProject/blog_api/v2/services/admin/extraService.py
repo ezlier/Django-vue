@@ -17,9 +17,7 @@ class VisitorService:
         self.visitors = visitor_repo if visitor_repo is not None else Visitor.objects
 
     def list_visitors(self):
-        return self.visitors.all().order_by("-visit_time").values(
-            "ip", "visit_time", "user_agent", "path"
-        )
+        return self.visitors.all().order_by("-visit_time")
 
 
 class AuditService:

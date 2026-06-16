@@ -9,7 +9,7 @@ v2 Article Serializers — ModelSerializer，只做校验和序列化
 from rest_framework import serializers
 
 from blog_api.models import Article, Tag
-from blog_api.v2.validators import validate_title
+from blog_api.v2.validators import validate_title, validate_title_optional
 
 
 # ── User 侧 Serializer ────────────────────────────────────────────
@@ -137,7 +137,8 @@ class AdminArticleCreateSerializer(serializers.ModelSerializer):
         model = Article
         fields = ["title", "mdfile", "cover", "tags", "is_draft"]
 
-    validate_title = validate_title
+    def validate_title(self, value):
+        return validate_title(value)
 
 
 class AdminArticleUpdateSerializer(serializers.ModelSerializer):
@@ -152,9 +153,7 @@ class AdminArticleUpdateSerializer(serializers.ModelSerializer):
         fields = ["title", "mdfile", "cover", "tags", "is_draft"]
 
     def validate_title(self, value):
-        if value is not None and not value.strip():
-            raise serializers.ValidationError("标题不能为空")
-        return value
+        return validate_title_optional(value)
 
 
 class AdminArticleStatusSerializer(serializers.ModelSerializer):
@@ -176,4 +175,5 @@ class AdminArticleUploadSerializer(serializers.ModelSerializer):
         model = Article
         fields = ["title", "md_file", "cover", "tags", "is_draft"]
 
-    validate_title = validate_title
+    def validate_title(self, value):
+        return validate_title(value)

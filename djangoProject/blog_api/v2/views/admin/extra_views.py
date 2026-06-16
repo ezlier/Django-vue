@@ -22,7 +22,7 @@ from blog_api.v1.views.response import ApiResponse
 # ── Login ─────────────────────────────────────────────────────────
 
 class AdminLoginViewSet(viewsets.GenericViewSet):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.AllowAny]  # 登录接口保持公开
 
     @action(detail=False, methods=["post"])
     def login(self, request):

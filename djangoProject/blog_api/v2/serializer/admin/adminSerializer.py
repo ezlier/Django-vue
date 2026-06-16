@@ -70,7 +70,8 @@ class AdminBannedWordSerializer(serializers.ModelSerializer):
         fields = ["id", "word"]
         read_only_fields = ["id"]
 
-    validate_word = validate_word
+    def validate_word(self, value):
+        return validate_word(value)
 
 
 class AdminBannedWordCreateSerializer(serializers.ModelSerializer):
@@ -78,4 +79,5 @@ class AdminBannedWordCreateSerializer(serializers.ModelSerializer):
         model = Bannedwords
         fields = ["word"]
 
-    validate_word = validate_unique_word
+    def validate_word(self, value):
+        return validate_unique_word(value)

@@ -61,4 +61,31 @@ onMounted(() => {
   border-radius: 12px;
   border: var(--border);
   box-shadow: var(--box-shadow);
-  bor
+  border-color: var(--color-border);
+  background-color: var(--color-background-soft);
+}
+
+.leftcolumn {
+  flex: 0 0 25%;
+}
+
+.rightcolumn {
+  flex: 1;
+  min-width: 0;
+
+}
+
+
+
+@media (max-width: 768px) {
+  .front-main {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .leftcolumn {
+    flex: none;
+    width: 100%;
+  }
+}
+</style>

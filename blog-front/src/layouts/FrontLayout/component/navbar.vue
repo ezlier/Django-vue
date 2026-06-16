@@ -151,4 +151,6 @@ onUnmounted(() => {
 }
 
 .theme-icon {
-  line-height:
+  line-height: 1;
+}
+</style>
