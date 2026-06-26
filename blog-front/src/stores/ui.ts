@@ -20,7 +20,7 @@ export const useUiStore = defineStore('ui', () => {
   async function fetchWebSetting() {
     try {
       const res = await getWebSetting()
-      webSetting.value = res.data.data
+      webSetting.value = res.data.data || res.data
     } catch {
       // 配置加载失败不阻塞页面
     }

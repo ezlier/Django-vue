@@ -4,6 +4,7 @@ import { getArticles, getArticle, getTags } from "@/api/user";
 
 export const useArticleStore = defineStore("article", () => {
   const articles = ref<Article[]>([]);
+  const articleList = ref<Article[]>([]);
   const currentArticle = ref<Article | null>(null);
   const tags = ref<Tag[]>([]);
   const total = ref(0);
@@ -13,9 +14,12 @@ export const useArticleStore = defineStore("article", () => {
     loading.value = true;
     try {
       const res = await getArticles({ page, page_size: pageSize });
-      const data = res.data.data || res.data;
-      articles.value = data.results || data;
-      total.value = data.count || 0;
+      const responseData = res.data;
+      // ApiResponse 格式: { code, msg, data: { results, count } }
+      // 部分接口直接返回 data 本身
+      const payload = responseData.data || responseData;
+      articles.value = payload.results || payload;
+      total.value = payload.count || payload.length || 0;
     } finally {
       loading.value = false;
     }
@@ -25,6 +29,19 @@ export const useArticleStore = defineStore("article", () => {
     const res = await getArticle(slug);
     currentArticle.value = res.data.data;
     return currentArticle.value;
+  }
+
+  async function fetchAllArticles() {
+    loading.value = true;
+    try {
+      const res = await getArticles({ page: 1, page_size: 9999 });
+      const responseData = res.data;
+      const payload = responseData.data || responseData;
+      articleList.value = payload.results || payload;
+      total.value = payload.count || payload.length || 0;
+    } finally {
+      loading.value = false;
+    }
   }
 
   async function fetchTags() {
@@ -38,9 +55,11 @@ export const useArticleStore = defineStore("article", () => {
     tags,
     total,
     loading,
+    articleList,
     fetchArticles,
     fetchArticle,
     fetchTags,
+    fetchAllArticles,
   };
 });
 
@@ -59,4 +78,5 @@ export interface Article {
 export interface Tag {
   id: number;
   name: string;
-  article_c
+  article_count?: number;
+}

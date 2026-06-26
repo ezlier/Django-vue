@@ -1,6 +1,155 @@
 <template>
-  <div class="page article-detail">
-    <h1>文章详情</h1>
-    <p><!-- TODO: 文章内容 --></p>
+  <div class="article-detail" v-if="article">
+    <!-- 封面 -->
+    <div v-if="article.cover" class="article-cover">
+      <img :src="article.cover" :alt="article.title" />
+    </div>
+
+    <!-- 头部 -->
+    <header class="article-header">
+      <h1 class="article-title">{{ article.title }}</h1>
+      <div class="article-meta">
+        <span class="article-date">{{ article.created_time }}</span>
+      </div>
+
+    </header>
+
+    <!-- 内容 -->
+    <article class="article-body" v-html="html"></article>
+
+    <div class="article-tags" v-if="article.tags?.length">
+      <span v-for="tag in article.tags" :key="typeof tag === 'string' ? tag : tag.id" class="article-tag">
+        {{ typeof tag === 'string' ? tag : tag.name }}
+      </span>
+    </div>
+
+    <!-- 评论 -->
+    <section class="article-comments">
+      <h3>评论</h3>
+      <!-- TODO: 评论组件 -->
+    </section>
+  </div>
+
+  <div v-else-if="loading" class="article-loading">
+    <span class="loading-spinner"></span>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref, onMounted, defineExpose } from 'vue'
+import { useRoute } from 'vue-router'
+import { useArticleStore } from '@/stores/article'
+
+const route = useRoute()
+const articleStore = useArticleStore()
+const article = ref<any>(null)
+const html = ref('')
+const loading = ref(true)
+
+onMounted(async () => {
+  try {
+    const slug = route.params.slug as string
+    const data = await articleStore.fetchArticle(slug)
+    article.value = data
+    if (data.content) {
+      html.value = data.content
+    }
+  } finally {
+    loading.value = false
+  }
+})
+
+// 暴露给父组件以驱动 ArticleSidebar
+defineExpose({ article, html })
+</script>
+
+<style scoped>
+.article-detail {
+  width: 100%;
+}
+
+.article-cover {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.article-cover img {
+  width: 100%;
+  max-height: 480px;
+  object-fit: cover;
+}
+
+.article-header {
+  margin-bottom: 32px;
+}
+
+.article-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-heading);
+  margin: 0 0 12px;
+  line-height: 1.3;
+}
+
+.article-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+  color: var(--color-text-mute);
+  margin-bottom: 12px;
+}
+
+.article-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.article-tag {
+  padding: 3px 12px;
+  font-size: 12px;
+  border-radius: 100px;
+  background: var(--color-background-mute);
+  color: var(--color-text-mute);
+}
+
+.article-body {
+  line-height: 1.8;
+  color: var(--color-text);
+  font-size: 16px;
+}
+
+.article-comments {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+}
+
+.article-comments h3 {
+  color: var(--color-heading);
+  margin-bottom: 16px;
+}
+
+.article-loading {
+  display: flex;
+  justify-content: center;
+  padding: 64px 0;
+}
+
+.loading-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-heading);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>

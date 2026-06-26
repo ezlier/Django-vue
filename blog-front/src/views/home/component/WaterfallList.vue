@@ -1,27 +1,19 @@
 <template>
   <div class="waterfall">
     <div class="waterfall__col">
-      <ArticleCard
-        v-for="(article, i) in leftColumn"
-        :key="article.slug"
-        :article="article"
-        :style="{ animationDelay: `${(i * 0.1).toFixed(1)}s` }"
-      />
+      <ArticleCard v-for="(article, i) in leftColumn" :key="article.slug" :article="article"
+        :style="{ animationDelay: `${(i * 0.1).toFixed(1)}s` }" />
     </div>
     <div class="waterfall__col">
-      <ArticleCard
-        v-for="(article, i) in rightColumn"
-        :key="article.slug"
-        :article="article"
-        :style="{ animationDelay: `${(i * 0.1 + 0.05).toFixed(1)}s` }"
-      />
+      <ArticleCard v-for="(article, i) in rightColumn" :key="article.slug" :article="article"
+        :style="{ animationDelay: `${(i * 0.1 + 0.05).toFixed(1)}s` }" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import ArticleCard from './ArticleCard.vue'
+import ArticleCard from '@/views/home/component/ArticleCard.vue'
 import type { Article } from '@/stores/article'
 
 const props = defineProps<{
@@ -56,6 +48,7 @@ const rightColumn = computed(() =>
   .waterfall {
     flex-direction: column;
   }
+
   .waterfall__col {
     gap: 16px;
   }

@@ -1,6 +1,89 @@
+<script setup>
+import { useUiStore } from "@/stores/ui"
+import { onMounted, ref } from 'vue';
+import MarkdownIt from "markdown-it"
+import hljs from "highlight.js"
+import "highlight.js/styles/github-dark.css"
+
+const html = ref("")
+
+const uiStore = useUiStore()
+
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  highlight(code, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      return `<pre class="hljs"><code>${hljs.highlight(code, { language: lang }).value}</code></pre>`
+    }
+    return `<pre class="hljs"><code>${md.utils.escapeHtml(code)}</code></pre>`
+  }
+})
+
+onMounted(async () => {
+  await uiStore.fetchWebSetting()
+  const mdStr = uiStore.webSetting?.about_md
+  if (mdStr) {
+    html.value = md.render(mdStr)
+  }
+})
+</script>
+
 <template>
-  <div class="page about">
-    <h1>关于</h1>
-    <p><!-- TODO: 关于页内容 --></p>
+  <div class="content">
+    <div>
+      <div class="about-wrapper" v-html="html"></div>
+    </div>
   </div>
+
 </template>
+
+<style scoped>
+.content {
+  width: 100%;
+}
+
+.about-wrapper {
+  line-height: 1.8;
+  color: var(--color-text);
+}
+
+.about-wrapper :deep(h1),
+.about-wrapper :deep(h2),
+.about-wrapper :deep(h3) {
+  color: var(--color-heading);
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.about-wrapper :deep(p) {
+  margin-bottom: 16px;
+}
+
+.about-wrapper :deep(pre) {
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.about-wrapper :deep(code) {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+}
+
+.about-wrapper :deep(img) {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.about-wrapper :deep(blockquote) {
+  border-left: 3px solid var(--color-heading);
+  padding-left: 16px;
+  margin-left: 0;
+  color: var(--color-text-mute);
+}
+
+.about-wrapper :deep(a) {
+  color: var(--color-heading);
+  text-decoration: underline;
+}
+</style>

@@ -1,0 +1,135 @@
+<template>
+  <nav class="article-nav-card" v-if="headings.length">
+    <h3 class="article-nav-card__title">目录</h3>
+    <ul class="article-nav-card__list">
+      <li
+        v-for="(h, i) in headings"
+        :key="i"
+        :class="[
+          'article-nav-card__item',
+          `article-nav-card__item--${h.level}`,
+          { 'article-nav-card__item--active': activeId === h.id }
+        ]"
+      >
+        <a :href="`#${h.id}`" @click.prevent="scrollTo(h.id)" :title="h.text">
+          {{ h.text }}
+        </a>
+      </li>
+    </ul>
+  </nav>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+
+interface Heading {
+  id: string
+  text: string
+  level: number
+}
+
+const headings = ref<Heading[]>([])
+const activeId = ref('')
+
+function collectHeadings() {
+  const els = document.querySelectorAll('.article-body h1, .article-body h2, .article-body h3')
+  headings.value = Array.from(els).map((el) => {
+    const h = el as HTMLElement
+    if (!h.id) {
+      h.id = 'heading-' + Math.random().toString(36).slice(2, 8)
+    }
+    return {
+      id: h.id,
+      text: h.innerText.slice(0, 30) + (h.innerText.length > 30 ? '...' : ''),
+      level: Number(h.tagName[1]),
+    }
+  })
+}
+
+function scrollTo(id: string) {
+  const el = document.getElementById(id)
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    activeId.value = id
+  }
+}
+
+function onScroll() {
+  const els = headings.value.map((h) => document.getElementById(h.id)).filter(Boolean) as HTMLElement[]
+  for (let i = els.length - 1; i >= 0; i--) {
+    if (els[i].getBoundingClientRect().top <= 120) {
+      activeId.value = headings.value[i].id
+      return
+    }
+  }
+  if (els.length) activeId.value = headings.value[0].id
+}
+
+onMounted(() => {
+  // 等待文章内容渲染后收集标题
+  setTimeout(collectHeadings, 300)
+  window.addEventListener('scroll', onScroll, { passive: true })
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', onScroll)
+})
+</script>
+
+<style scoped>
+.article-nav-card {
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+}
+
+.article-nav-card__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-heading);
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.article-nav-card__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.article-nav-card__item {
+  border-left: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.article-nav-card__item--active {
+  border-left-color: var(--color-heading);
+}
+
+.article-nav-card__item a {
+  display: block;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--color-text-mute);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s;
+}
+
+.article-nav-card__item--active a {
+  color: var(--color-heading);
+  font-weight: 600;
+}
+
+.article-nav-card__item a:hover {
+  color: var(--color-heading);
+}
+
+.article-nav-card__item--level2 a { padding-left: 24px; }
+
+.article-nav-card__item--level3 a { padding-left: 36px; }
+</style>
