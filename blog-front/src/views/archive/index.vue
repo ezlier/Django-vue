@@ -33,7 +33,7 @@ const filteredArticles = computed(() => {
   if (activeTag.value === null) return source
   return source.filter((a) =>
     a.tags.some((t) =>
-      typeof t === 'string' ? false : t.id === activeTag.value
+      typeof t === 'string' ? false : (typeof t === 'object' && t.id === activeTag.value)
     )
   )
 })

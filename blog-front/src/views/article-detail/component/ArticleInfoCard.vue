@@ -68,21 +68,20 @@ const daysAgo = computed(() => {
 }
 
 .article-info-card__title {
-  padding: 16px 20px;
-  margin-bottom: 12px;
+  padding: 16px 20px 0;
   font-weight: 700;
-  font-size: 1.1rem;
-  margin-bottom: .6rem;
-  border-bottom: 2px dashed;
-  padding-bottom: .3rem;
+  font-size: 1rem;
+  color: var(--color-heading);
+  border: none;
+  margin-bottom: 0;
 }
 
 .article-info-card__cover {
-  padding: 16px 20px;
+  padding: 16px 20px 0;
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-
+  box-sizing: border-box;
 }
 
 .article-info-card__cover img {

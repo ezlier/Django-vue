@@ -28,9 +28,8 @@ const headings = ref<Heading[]>([])
 const activeId = ref('')
 
 function collectHeadings() {
-  // 使用 setTimeout 确保 v-html 渲染完成后再采集标题
   setTimeout(() => {
-    const container = document.querySelector('.markdown-body')
+    const container = document.querySelector('.article-body')
     if (!container) return
     const els = container.querySelectorAll('h1, h2, h3')
     headings.value = Array.from(els).map((el) => {
@@ -38,13 +37,14 @@ function collectHeadings() {
       if (!h.id) {
         h.id = 'heading-' + Math.random().toString(36).slice(2, 8)
       }
+      const rawText = h.innerText || h.textContent || ''
       return {
         id: h.id,
-        text: h.innerText.slice(0, 30) + (h.innerText.length > 30 ? '...' : ''),
+        text: rawText.slice(0, 30) + (rawText.length > 30 ? '...' : ''),
         level: Number(h.tagName[1]),
       }
     })
-  })
+  }, 600)
 }
 
 function scrollTo(id: string) {
@@ -56,19 +56,20 @@ function scrollTo(id: string) {
 }
 
 function onScroll() {
+  if (!headings.value.length) return
   const els = headings.value.map((h) => document.getElementById(h.id)).filter(Boolean) as HTMLElement[]
+  if (!els.length) return
   for (let i = els.length - 1; i >= 0; i--) {
     if (els[i].getBoundingClientRect().top <= 120) {
       activeId.value = headings.value[i].id
       return
     }
   }
-  if (els.length) activeId.value = headings.value[0].id
+  activeId.value = headings.value[0].id
 }
 
 onMounted(() => {
-  // 等待文章内容渲染后收集标题
-  setTimeout(collectHeadings, 300)
+  collectHeadings()
   window.addEventListener('scroll', onScroll, { passive: true })
 })
 

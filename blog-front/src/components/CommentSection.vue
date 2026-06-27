@@ -7,19 +7,10 @@
 
     <!-- 评论列表 -->
     <div class="comment-section__list" v-if="comments.length">
-      <div
-        v-for="item in comments"
-        :key="item.id"
-        class="comment-item"
-      >
+      <div v-for="item in comments" :key="item.id" class="comment-item">
         <div class="comment-item__avatar">
-          <img
-            v-if="item.QQ"
-            :src="`https://q1.qlogo.cn/g?b=qq&nk=${item.QQ}&s=100`"
-            :alt="item.name"
-            class="comment-item__avatar-img"
-            @error="onAvatarError(item)"
-          />
+          <img v-if="item.QQ" :src="`https://q1.qlogo.cn/g?b=qq&nk=${item.QQ}&s=100`" :alt="item.name"
+            class="comment-item__avatar-img" @error="onAvatarError(item)" />
           <div v-else class="comment-item__avatar-placeholder">
             {{ item.name[0] }}
           </div>
@@ -41,7 +32,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ElMessage } from 'element-plus'
 import CommentForm from './CommentForm.vue'
 
 interface CommentItem {
@@ -63,17 +53,14 @@ const emit = defineEmits<{
   submit: [data: { name: string; text: string; QQ?: string; email?: string }]
 }>()
 
+const formRef = ref<InstanceType<typeof CommentForm>>()
+
 function onAvatarError(item: CommentItem) {
   item._avatarFailed = true
 }
 
-async function onSubmit(data: { name: string; text: string; QQ?: string; email?: string }) {
-  try {
-    await emit('submit', data)
-    ElMessage.success('留言成功')
-  } catch (err: any) {
-    ElMessage.error(err?.response?.data?.msg || '留言失败')
-  }
+function onSubmit(data: { name: string; text: string; QQ?: string; email?: string }) {
+  emit('submit', data)
 }
 </script>
 

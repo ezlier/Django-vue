@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useUiStore } from "@/stores/ui"
 import { onMounted, ref } from 'vue'
+import { ElMessage } from 'element-plus'
 import MarkdownIt from "markdown-it"
 import hljs from "highlight.js"
 import "highlight.js/styles/github-dark.css"
@@ -33,8 +34,13 @@ async function fetchMessages() {
 }
 
 async function handleMessage(data: { name: string; text: string; QQ?: string; email?: string }) {
-  await createMessage(data as any)
-  await fetchMessages()
+  try {
+    await createMessage(data as any)
+    await fetchMessages()
+    ElMessage.success('留言成功')
+  } catch (err: any) {
+    ElMessage.error(err?.response?.data?.msg || '留言失败')
+  }
 }
 
 onMounted(async () => {
@@ -51,11 +57,7 @@ onMounted(async () => {
   <div class="content">
     <div class="about-wrapper" v-html="html"></div>
 
-    <CommentSection
-      title="留言墙"
-      :comments="messageList"
-      @submit="handleMessage"
-    />
+    <CommentSection title="留言墙" :comments="messageList" @submit="handleMessage" />
   </div>
 </template>
 

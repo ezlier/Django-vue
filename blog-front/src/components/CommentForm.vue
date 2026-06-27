@@ -68,16 +68,13 @@ async function handleSubmit() {
   }
   submitting.value = true
   try {
-    await emit('submit', {
+    emit('submit', {
       name: form.name.trim(),
       text: form.text.trim(),
       QQ: form.QQ.trim() || undefined,
       email: form.email.trim() || undefined,
     })
-    // 通过 emit 而非直接调用接口，让父组件控制提交逻辑和成功提示
     reset()
-  } catch {
-    // 父组件处理错误
   } finally {
     submitting.value = false
   }

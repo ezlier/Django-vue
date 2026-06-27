@@ -23,11 +23,7 @@
     </div>
 
     <!-- 评论区 -->
-    <CommentSection
-      title="评论"
-      :comments="commentList"
-      @submit="handleComment"
-    />
+    <CommentSection title="评论" :comments="commentList" @submit="handleComment" />
   </div>
 
   <div v-else-if="loading" class="article-loading">
@@ -38,6 +34,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { useArticleStore } from '@/stores/article'
 import { getComments, createComment } from '@/api/user'
 import CommentSection from '@/components/CommentSection.vue'
@@ -87,8 +84,13 @@ async function fetchComments(slug: string) {
 
 async function handleComment(data: { name: string; text: string; QQ?: string; email?: string }) {
   const slug = route.params.slug as string
-  await createComment(slug, data as any)
-  await fetchComments(slug)
+  try {
+    await createComment(slug, data as any)
+    await fetchComments(slug)
+    ElMessage.success('评论成功')
+  } catch (err: any) {
+    ElMessage.error(err?.response?.data?.msg || '评论失败')
+  }
 }
 
 // 首次加载

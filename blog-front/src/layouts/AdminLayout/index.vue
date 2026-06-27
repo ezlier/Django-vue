@@ -38,3 +38,123 @@ import { useUiStore } from '@/stores/ui'
 const auth = useAuthStore()
 const ui = useUiStore()
 </script>
+
+<style scoped>
+.admin-layout {
+  display: flex;
+  min-height: 100dvh;
+}
+
+.admin-sidebar {
+  width: 240px;
+  background: var(--color-background-mute);
+  border-right: 1px solid var(--color-border);
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: width 0.3s;
+}
+
+.admin-layout.collapsed .admin-sidebar {
+  width: 64px;
+}
+
+.sidebar-header {
+  padding: 0 20px 20px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 12px;
+}
+
+.admin-logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-heading);
+  text-decoration: none;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 12px;
+}
+
+.sidebar-nav a {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.sidebar-nav a:hover {
+  background: var(--color-border);
+}
+
+.sidebar-nav a.active {
+  background: var(--color-heading);
+  color: #fff;
+  font-weight: 600;
+}
+
+.admin-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+  height: 56px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-background);
+}
+
+.collapse-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.admin-topbar .username {
+  font-size: 14px;
+  color: var(--color-text);
+  margin-left: auto;
+}
+
+.admin-topbar .theme-toggle {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.logout-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+  color: var(--color-text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background: var(--color-background-mute);
+}
+
+.admin-main {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+</style>
