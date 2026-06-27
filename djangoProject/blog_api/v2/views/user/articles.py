@@ -35,6 +35,17 @@ class UserArticleViewSet(viewsets.ReadOnlyModelViewSet):
         super().__init__(**kwargs)
         self.article_service = ArticleService()
 
+    @property
+    def paginator(self):
+        """返回自定义分页器，允许客户端通过 page_size 覆盖全局 PAGE_SIZE"""
+        if not hasattr(self, '_paginator'):
+            from rest_framework.pagination import PageNumberPagination
+            self._paginator = PageNumberPagination()
+            page_size = self.request.query_params.get('page_size')
+            if page_size is not None:
+                self._paginator.page_size = int(page_size)
+        return self._paginator
+
     def get_queryset(self):
         return self.article_service.list_published().all()
 

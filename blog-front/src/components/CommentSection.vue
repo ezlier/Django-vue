@@ -32,6 +32,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { ElMessage } from 'element-plus'
 import CommentForm from './CommentForm.vue'
 
 interface CommentItem {
@@ -53,14 +54,18 @@ const emit = defineEmits<{
   submit: [data: { name: string; text: string; QQ?: string; email?: string }]
 }>()
 
-const formRef = ref<InstanceType<typeof CommentForm>>()
-
 function onAvatarError(item: CommentItem) {
   item._avatarFailed = true
 }
 
-function onSubmit(data: { name: string; text: string; QQ?: string; email?: string }) {
-  emit('submit', data)
+async function onSubmit(data: { name: string; text: string; QQ?: string; email?: string }) {
+  try {
+    await emit('submit', data)
+    ElMessage.success('留言成功')
+    formRef.value?.reset()
+  } catch (err: any) {
+    ElMessage.error(err?.response?.data?.msg || '留言失败')
+  }
 }
 </script>
 

@@ -151,7 +151,7 @@ watch(
           <span class="label">标签</span>
           <div class="value">
             <el-tag effect="info" v-for="value in article.tags" :key="value" size="mini">
-              {{ value }}
+              {{ value.name }}
             </el-tag>
           </div>
         </div>

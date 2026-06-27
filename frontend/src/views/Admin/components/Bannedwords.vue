@@ -46,7 +46,7 @@ const fetchbannedword = async () => {
     const res = await bannedwords()
     bannedword.value = res.data.data
   } catch (error) {
-    // 获取违禁词失败，静默处理
+     ElMessage.error('获取失败')
   }
 }
 

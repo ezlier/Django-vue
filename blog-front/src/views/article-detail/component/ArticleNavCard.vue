@@ -27,24 +27,24 @@ interface Heading {
 const headings = ref<Heading[]>([])
 const activeId = ref('')
 
+let observer: MutationObserver | null = null
+
 function collectHeadings() {
-  setTimeout(() => {
-    const container = document.querySelector('.article-body')
-    if (!container) return
-    const els = container.querySelectorAll('h1, h2, h3')
-    headings.value = Array.from(els).map((el) => {
-      const h = el as HTMLElement
-      if (!h.id) {
-        h.id = 'heading-' + Math.random().toString(36).slice(2, 8)
-      }
-      const rawText = h.innerText || h.textContent || ''
-      return {
-        id: h.id,
-        text: rawText.slice(0, 30) + (rawText.length > 30 ? '...' : ''),
-        level: Number(h.tagName[1]),
-      }
-    })
-  }, 600)
+  const container = document.querySelector('.article-body')
+  if (!container) return
+  const els = container.querySelectorAll('h1, h2, h3')
+  headings.value = Array.from(els).map((el) => {
+    const h = el as HTMLElement
+    if (!h.id) {
+      h.id = 'heading-' + Math.random().toString(36).slice(2, 8)
+    }
+    const rawText = h.innerText || h.textContent || ''
+    return {
+      id: h.id,
+      text: rawText.slice(0, 30) + (rawText.length > 30 ? '...' : ''),
+      level: Number(h.tagName[1]),
+    }
+  })
 }
 
 function scrollTo(id: string) {
@@ -69,12 +69,24 @@ function onScroll() {
 }
 
 onMounted(() => {
-  collectHeadings()
   window.addEventListener('scroll', onScroll, { passive: true })
+
+  // 延迟采集，等待 v-html 渲染完成
+  setTimeout(collectHeadings, 600)
+
+  // 监听 .article-body 内容变化（处理同一路由切换文章的场景）
+  const target = document.querySelector('.article-body')
+  if (target) {
+    observer = new MutationObserver(() => {
+      setTimeout(collectHeadings, 300)
+    })
+    observer.observe(target, { childList: true, subtree: true })
+  }
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
+  observer?.disconnect()
 })
 </script>
 

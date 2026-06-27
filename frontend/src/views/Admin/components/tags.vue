@@ -48,7 +48,7 @@ const editForm = reactive({
 // 获取数据
 const loadTags = async () => {
     const res = await getAdminTags();
-    tags.value = res.data.data;
+    tags.value = res.data.results;
 }
 
 onMounted(() => {

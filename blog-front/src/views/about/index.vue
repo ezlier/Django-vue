@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useUiStore } from "@/stores/ui"
 import { onMounted, ref } from 'vue'
-import { ElMessage } from 'element-plus'
 import MarkdownIt from "markdown-it"
 import hljs from "highlight.js"
 import "highlight.js/styles/github-dark.css"
@@ -34,13 +33,8 @@ async function fetchMessages() {
 }
 
 async function handleMessage(data: { name: string; text: string; QQ?: string; email?: string }) {
-  try {
-    await createMessage(data as any)
-    await fetchMessages()
-    ElMessage.success('留言成功')
-  } catch (err: any) {
-    ElMessage.error(err?.response?.data?.msg || '留言失败')
-  }
+  await createMessage(data as any)
+  await fetchMessages()
 }
 
 onMounted(async () => {

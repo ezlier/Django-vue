@@ -33,7 +33,11 @@ services:
       volumes:
       - mysql_data:/var/lib/mysql
 
-
+  tunnel:
+   image: cloudflare/cloudflared:latest
+   environment:
+      - TUNNEL_TOKEN=eyJhIjoiYjM0NGUxM2U2YTc4ZWYwNGVhNjI3MzI0OWY3ZWRmZDUiLCJ0IjoiN2Y2NDBkZjAtNDkxYy00ZDI0LTg3MDktNDRiYzZmYzUyYzQ2IiwicyI6Ik1qZzVNREUwTnpndE9UQXpNeTAwTTJZeExXRmxZVGd0WXpsaVpHTXhPR0ZtWlRWayJ9
+   command: tunnel --no-autoupdate run --protocol http2 --no-chunked-encoding
 
 volumes:
   mysql_data:

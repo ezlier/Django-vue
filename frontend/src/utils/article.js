@@ -45,11 +45,14 @@ export const batchDeleteArticles = (ids) =>
 export const getTags = () =>
   api.get(`user/article/tag/`)
 
+export const getAdminTags = () =>
+  api.get(`admin/tag/`)
+
 export const updateTag = (id, name) =>
-  api.put(`/admin/tag/${id}/`, { name })
+  api.put(`admin/tag/${id}/`, { name })
 
 export const deleteTag = (id) =>
-  api.delete(`/admin/tag/${id}/`)
+  api.delete(`admin/tag/${id}/`)
 
 
 // ── 兼容旧 API 名称（组件中仍在使用） ──────────

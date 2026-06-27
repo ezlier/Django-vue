@@ -27,7 +27,7 @@ const messageList = ref([])
 
 const fetchMessage = async () => {
     const res = await getadminMessage()
-    messageList.value = res.data.data
+    messageList.value = res.data.results
 }
 
 onMounted(fetchMessage)

@@ -98,8 +98,8 @@ const fetchArticles = async () => {
     params.is_draft = isDraftFilter.value
   }
   const res = await getAdminArticles(params);
-  articles.value = res.data.data.results || res.data.data
-  total.value = res.data.data.count || 0
+  articles.value = res.data.results || res.data.data
+  total.value = res.data.count || 0
 };
 
 const handlePageChange = (page) => {

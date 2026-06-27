@@ -52,7 +52,7 @@
   /* 字体 */
   --color-heading: #d76d89;
   --color-text: #6f6164;
-  --text-color: #5e5558;
+  --text-color: #000000;
   --text-secondary: #9a8d91;
   --color-primary: #fea3b4;
 
@@ -90,8 +90,8 @@ html.dark {
   --color-border-hover: rgba(255, 180, 196, 0.18);
   --border: 1px solid rgba(255, 180, 196, 0.12);
   --color-heading: #ffd3da;
-  --color-text: #efe4e8;
-  --text-color: #f2e8eb;
+  --color-text: #eeeeee;
+  --text-color: #eeeeee;
   --text-secondary: #bcaeb2;
   --box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
   --box-shadow-hover: 0 18px 44px rgba(0, 0, 0, 0.35);
