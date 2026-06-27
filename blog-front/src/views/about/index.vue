@@ -1,9 +1,11 @@
-<script setup>
+<script setup lang="ts">
 import { useUiStore } from "@/stores/ui"
-import { onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue'
 import MarkdownIt from "markdown-it"
 import hljs from "highlight.js"
 import "highlight.js/styles/github-dark.css"
+import { getMessages, createMessage } from '@/api/user'
+import CommentSection from '@/components/CommentSection.vue'
 
 const html = ref("")
 
@@ -12,7 +14,7 @@ const uiStore = useUiStore()
 const md = new MarkdownIt({
   html: true,
   linkify: true,
-  highlight(code, lang) {
+  highlight(code: string, lang: string) {
     if (lang && hljs.getLanguage(lang)) {
       return `<pre class="hljs"><code>${hljs.highlight(code, { language: lang }).value}</code></pre>`
     }
@@ -31,11 +33,14 @@ onMounted(async () => {
 
 <template>
   <div class="content">
-    <div>
-      <div class="about-wrapper" v-html="html"></div>
-    </div>
-  </div>
+    <div class="about-wrapper" v-html="html"></div>
 
+    <CommentSection
+      title="留言"
+      :fetchFn="getMessages as any"
+      :submitFn="createMessage"
+    />
+  </div>
 </template>
 
 <style scoped>
