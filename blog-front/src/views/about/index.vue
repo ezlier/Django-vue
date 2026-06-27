@@ -8,6 +8,7 @@ import { getMessages, createMessage } from '@/api/user'
 import CommentSection from '@/components/CommentSection.vue'
 
 const html = ref("")
+const messageList = ref<any[]>([])
 
 const uiStore = useUiStore()
 
@@ -22,12 +23,27 @@ const md = new MarkdownIt({
   }
 })
 
+async function fetchMessages() {
+  try {
+    const res = await getMessages()
+    messageList.value = res.data.data || []
+  } catch {
+    messageList.value = []
+  }
+}
+
+async function handleMessage(data: { name: string; text: string; QQ?: string; email?: string }) {
+  await createMessage(data as any)
+  await fetchMessages()
+}
+
 onMounted(async () => {
   await uiStore.fetchWebSetting()
   const mdStr = uiStore.webSetting?.about_md
   if (mdStr) {
     html.value = md.render(mdStr)
   }
+  await fetchMessages()
 })
 </script>
 
@@ -36,9 +52,9 @@ onMounted(async () => {
     <div class="about-wrapper" v-html="html"></div>
 
     <CommentSection
-      title="留言"
-      :fetchFn="getMessages as any"
-      :submitFn="createMessage"
+      title="留言墙"
+      :comments="messageList"
+      @submit="handleMessage"
     />
   </div>
 </template>
@@ -51,6 +67,7 @@ onMounted(async () => {
 .about-wrapper {
   line-height: 1.8;
   color: var(--color-text);
+  margin-bottom: 48px;
 }
 
 .about-wrapper :deep(h1),
