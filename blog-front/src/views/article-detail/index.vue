@@ -11,7 +11,6 @@
       <div class="article-meta">
         <span class="article-date">{{ article.created_time }}</span>
       </div>
-
     </header>
 
     <!-- 内容 -->
@@ -36,9 +35,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, defineExpose } from 'vue'
+import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useArticleStore } from '@/stores/article'
+
+import MarkdownIt from 'markdown-it'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/github-dark.css'
 
 const route = useRoute()
 const articleStore = useArticleStore()
@@ -46,21 +49,40 @@ const article = ref<any>(null)
 const html = ref('')
 const loading = ref(true)
 
-onMounted(async () => {
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  highlight(code: string, lang: string) {
+    if (lang && hljs.getLanguage(lang)) {
+      return `<pre class="hljs"><code>${hljs.highlight(code, { language: lang }).value}</code></pre>`
+    }
+    return `<pre class="hljs"><code>${md.utils.escapeHtml(code)}</code></pre>`
+  },
+})
+
+async function load(slug: string) {
+  loading.value = true
   try {
-    const slug = route.params.slug as string
     const data = await articleStore.fetchArticle(slug)
     article.value = data
-    if (data.content) {
-      html.value = data.content
-    }
+    html.value = data.content ? md.render(data.content) : ''
   } finally {
     loading.value = false
   }
-})
+}
 
-// 暴露给父组件以驱动 ArticleSidebar
-defineExpose({ article, html })
+// 首次加载
+const initialSlug = route.params.slug as string
+if (initialSlug) {
+  load(initialSlug)
+}
+
+// 路由参数变化时重新加载（解决同一组件不同 slug 不刷新的问题）
+watch(() => route.params.slug, (newSlug) => {
+  if (newSlug) {
+    load(newSlug as string)
+  }
+})
 </script>
 
 <style scoped>

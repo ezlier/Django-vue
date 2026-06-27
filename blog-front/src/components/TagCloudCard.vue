@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useArticleStore } from '@/stores/article'
 
 const articleStore = useArticleStore()
@@ -35,6 +35,12 @@ const colorPool = [
 function randomColor(seed: number) {
   return colorPool[seed % colorPool.length]
 }
+
+onMounted(async () => {
+  if (!articleStore.tags.length) {
+    await articleStore.fetchTags()
+  }
+})
 </script>
 
 <style scoped>
@@ -43,6 +49,8 @@ function randomColor(seed: number) {
   border-radius: 12px;
   border: 1px solid var(--color-border);
   background: var(--color-background);
+  position: sticky;
+  top: 80px;
 }
 
 .tag-cloud-card__title {

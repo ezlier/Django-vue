@@ -12,6 +12,12 @@ const ArchiveView = () => import("@/views/archive/index.vue");
 const AboutView = () => import("@/views/about/index.vue");
 const LoginView = () => import("@/views/login/index.vue");
 
+// 侧边栏
+const CommonSidebar = () =>
+  import("@/layouts/FrontLayout/component/Sidebar.vue");
+const ArticleSidebar = () =>
+  import("@/views/article-detail/component/ArticleSidebar.vue");
+
 // 后台
 const AdminDashboard = () => import("@/views/admin/dashboard/index.vue");
 const AdminArticles = () => import("@/views/admin/articles/index.vue");
@@ -29,14 +35,38 @@ const routes: RouteRecordRaw[] = [
     component: FrontLayout,
     children: [
       { path: "", redirect: "/home" },
-      { path: "home", name: "Home", component: HomeView },
+      {
+        path: "home",
+        name: "Home",
+        components: {
+          default: HomeView,
+          sidebar: CommonSidebar,
+        },
+      },
       {
         path: "article/:slug",
         name: "ArticleDetail",
-        component: ArticleDetail,
+        components: {
+          default: ArticleDetail,
+          sidebar: ArticleSidebar,
+        },
       },
-      { path: "archive", name: "Archive", component: ArchiveView },
-      { path: "about", name: "About", component: AboutView },
+      {
+        path: "archive",
+        name: "Archive",
+        components: {
+          default: ArchiveView,
+          sidebar: CommonSidebar,
+        },
+      },
+      {
+        path: "about",
+        name: "About",
+        components: {
+          default: AboutView,
+          sidebar: CommonSidebar,
+        },
+      },
     ],
   },
 

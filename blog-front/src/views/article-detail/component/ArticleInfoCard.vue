@@ -64,8 +64,6 @@ const daysAgo = computed(() => {
   border: 1px solid var(--color-border);
   background: var(--color-background);
   overflow: hidden;
-  position: sticky;
-  top: 80px;
 }
 
 .article-info-card__cover {

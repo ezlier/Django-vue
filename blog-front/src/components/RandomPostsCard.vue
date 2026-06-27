@@ -14,14 +14,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useArticleStore } from '@/stores/article'
 
 const articleStore = useArticleStore()
 
 const list = computed(() => {
   const all = [...articleStore.articleList]
-  // Fisher-Yates shuffle
   for (let i = all.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [all[i], all[j]] = [all[j], all[i]]
@@ -35,6 +34,12 @@ function formatDate(date: string) {
   const day = d.getDate().toString().padStart(2, '0')
   return `${m}-${day}`
 }
+
+onMounted(async () => {
+  if (!articleStore.articleList.length) {
+    await articleStore.fetchAllArticles()
+  }
+})
 </script>
 
 <style scoped>
@@ -43,6 +48,8 @@ function formatDate(date: string) {
   border-radius: 12px;
   border: 1px solid var(--color-border);
   background: var(--color-background);
+  position: sticky;
+  top: 80px;
 }
 
 .random-card__title {

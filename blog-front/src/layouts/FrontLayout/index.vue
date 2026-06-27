@@ -6,18 +6,13 @@
 
     <main class="front-main">
       <div class="leftcolumn">
-        <Sidebar v-if="!isArticlePage" />
-        <ArticleSidebar
-          v-else
-          :article="currentArticle"
-          :content="articleContent"
-        />
+        <RouterView name="sidebar" />
       </div>
 
       <div class="rightcolumn">
         <RouterView v-slot="{ Component }">
           <KeepAlive :exclude="['ArticleDetail']">
-            <component :is="Component" :ref="setArticleRef" />
+            <component :is="Component" />
           </KeepAlive>
         </RouterView>
       </div>
@@ -28,31 +23,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { onMounted } from 'vue'
 import { useUiStore } from '@/stores/ui'
-import { useArticleStore } from '@/stores/article'
-import type { Article } from '@/stores/article'
 import Navbar from './component/navbar.vue'
 import Footer from './component/footer.vue'
 import Header from './component/header.vue'
-import Sidebar from './component/Sidebar.vue'
-import ArticleSidebar from '@/views/article-detail/component/ArticleSidebar.vue'
 
-const route = useRoute()
 const ui = useUiStore()
-const articleStore = useArticleStore()
-
-const isArticlePage = computed(() => route.name === 'ArticleDetail')
-const currentArticle = ref<Article | null>(null)
-const articleContent = ref('')
-
-function setArticleRef(el: any) {
-  if (el?.article) {
-    currentArticle.value = el.article
-    articleContent.value = el.html || ''
-  }
-}
 
 onMounted(() => {
   ui.fetchWebSetting()

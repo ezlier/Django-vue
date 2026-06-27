@@ -29,8 +29,9 @@ const validTags = computed(() =>
 )
 
 const filteredArticles = computed(() => {
-  if (activeTag.value === null) return articleStore.articleList
-  return articleStore.articleList.filter((a) =>
+  const source = articleStore.articleList
+  if (activeTag.value === null) return source
+  return source.filter((a) =>
     a.tags.some((t) =>
       typeof t === 'string' ? false : t.id === activeTag.value
     )

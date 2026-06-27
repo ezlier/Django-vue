@@ -2,15 +2,11 @@
   <nav class="article-nav-card" v-if="headings.length">
     <h3 class="article-nav-card__title">目录</h3>
     <ul class="article-nav-card__list">
-      <li
-        v-for="(h, i) in headings"
-        :key="i"
-        :class="[
-          'article-nav-card__item',
-          `article-nav-card__item--${h.level}`,
-          { 'article-nav-card__item--active': activeId === h.id }
-        ]"
-      >
+      <li v-for="(h, i) in headings" :key="i" :class="[
+        'article-nav-card__item',
+        `article-nav-card__item--${h.level}`,
+        { 'article-nav-card__item--active': activeId === h.id }
+      ]">
         <a :href="`#${h.id}`" @click.prevent="scrollTo(h.id)" :title="h.text">
           {{ h.text }}
         </a>
@@ -32,7 +28,10 @@ const headings = ref<Heading[]>([])
 const activeId = ref('')
 
 function collectHeadings() {
-  const els = document.querySelectorAll('.article-body h1, .article-body h2, .article-body h3')
+  // 直接查找整个文档中的 h1-h3（scoped 样式在 v-html 渲染的 .article-body 内容中不生效）
+  const container = document.querySelector('.article-body')
+  if (!container) return
+  const els = container.querySelectorAll('h1, h2, h3')
   headings.value = Array.from(els).map((el) => {
     const h = el as HTMLElement
     if (!h.id) {
@@ -82,6 +81,9 @@ onUnmounted(() => {
   border-radius: 12px;
   border: 1px solid var(--color-border);
   background: var(--color-background);
+  top: 80px;
+  position: sticky;
+
 }
 
 .article-nav-card__title {
@@ -97,6 +99,23 @@ onUnmounted(() => {
   list-style: none;
   padding: 0;
   margin: 0;
+  max-height: 40vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.article-nav-card__list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.article-nav-card__list::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+.article-nav-card__list::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .article-nav-card__item {
@@ -129,7 +148,11 @@ onUnmounted(() => {
   color: var(--color-heading);
 }
 
-.article-nav-card__item--level2 a { padding-left: 24px; }
+.article-nav-card__item--level2 a {
+  padding-left: 24px;
+}
 
-.article-nav-card__item--level3 a { padding-left: 36px; }
+.article-nav-card__item--level3 a {
+  padding-left: 36px;
+}
 </style>
