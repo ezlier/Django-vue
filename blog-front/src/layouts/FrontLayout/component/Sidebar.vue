@@ -17,5 +17,6 @@ import RandomPostsCard from '@/components/RandomPostsCard.vue'
   display: flex;
   flex-direction: column;
   gap: 20px;
+  height: 100%;
 }
 </style>

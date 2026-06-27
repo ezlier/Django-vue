@@ -28,20 +28,22 @@ const headings = ref<Heading[]>([])
 const activeId = ref('')
 
 function collectHeadings() {
-  // 直接查找整个文档中的 h1-h3（scoped 样式在 v-html 渲染的 .article-body 内容中不生效）
-  const container = document.querySelector('.article-body')
-  if (!container) return
-  const els = container.querySelectorAll('h1, h2, h3')
-  headings.value = Array.from(els).map((el) => {
-    const h = el as HTMLElement
-    if (!h.id) {
-      h.id = 'heading-' + Math.random().toString(36).slice(2, 8)
-    }
-    return {
-      id: h.id,
-      text: h.innerText.slice(0, 30) + (h.innerText.length > 30 ? '...' : ''),
-      level: Number(h.tagName[1]),
-    }
+  // 使用 setTimeout 确保 v-html 渲染完成后再采集标题
+  setTimeout(() => {
+    const container = document.querySelector('.markdown-body')
+    if (!container) return
+    const els = container.querySelectorAll('h1, h2, h3')
+    headings.value = Array.from(els).map((el) => {
+      const h = el as HTMLElement
+      if (!h.id) {
+        h.id = 'heading-' + Math.random().toString(36).slice(2, 8)
+      }
+      return {
+        id: h.id,
+        text: h.innerText.slice(0, 30) + (h.innerText.length > 30 ? '...' : ''),
+        level: Number(h.tagName[1]),
+      }
+    })
   })
 }
 
@@ -81,9 +83,6 @@ onUnmounted(() => {
   border-radius: 12px;
   border: 1px solid var(--color-border);
   background: var(--color-background);
-  top: 80px;
-  position: sticky;
-
 }
 
 .article-nav-card__title {
@@ -121,6 +120,7 @@ onUnmounted(() => {
 .article-nav-card__item {
   border-left: 2px solid transparent;
   transition: border-color 0.2s;
+  color: var(--color-text);
 }
 
 .article-nav-card__item--active {

@@ -1,12 +1,7 @@
 <template>
   <article class="card" @click="goDetail">
     <div class="card__cover">
-      <img
-        v-if="article.cover"
-        :src="article.cover"
-        :alt="article.title"
-        loading="lazy"
-      />
+      <img v-if="article.cover" :src="article.cover" :alt="article.title" loading="lazy" />
       <div v-else class="card__cover-placeholder">
         <span class="placeholder-icon">📝</span>
       </div>
@@ -17,20 +12,18 @@
 
       <div class="card__meta">
         <div class="card__tags" v-if="article.tags?.length">
-          <span
-            v-for="tag in article.tags"
-            :key="tag.id || tag.name"
-            class="card__tag"
-          >
+          <span v-for="tag in article.tags" :key="tag.id || tag.name" class="card__tag">
             {{ typeof tag === 'string' ? tag : tag.name }}
           </span>
         </div>
-        <span class="card__date">{{ article.created_time }}</span>
+
       </div>
+
+      <span class="card__date">{{ article.created_time }}</span>
 
       <div class="card__action">
         <span class="card__read-btn">
-          阅读全文
+          READING
           <span class="arrow">→</span>
         </span>
       </div>
@@ -74,6 +67,7 @@ function goDetail() {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -164,13 +158,24 @@ function goDetail() {
 }
 
 .card__read-btn {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-heading);
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  transition: gap 0.25s ease;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  font-family: 'Arial', sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  background-color: var(--color-background);
+  border: none;
+  border-radius: 4px;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  filter: blur(0.5px);
+  -webkit-filter: blur(0.5px);
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .card:hover .card__read-btn {

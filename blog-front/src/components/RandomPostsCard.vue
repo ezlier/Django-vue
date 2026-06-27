@@ -49,7 +49,7 @@ onMounted(async () => {
   border: 1px solid var(--color-border);
   background: var(--color-background);
   position: sticky;
-  top: 80px;
+  top: 230px;
 }
 
 .random-card__title {

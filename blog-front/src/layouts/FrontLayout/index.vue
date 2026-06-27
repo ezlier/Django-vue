@@ -53,10 +53,7 @@ onMounted(() => {
 }
 
 .leftcolumn {
-  flex: 0 0 280px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  flex: 0 0 23%;
 }
 
 .rightcolumn {
@@ -75,6 +72,7 @@ onMounted(() => {
     flex-direction: column;
     padding: 16px;
   }
+
   .leftcolumn {
     flex: none;
     width: 100%;

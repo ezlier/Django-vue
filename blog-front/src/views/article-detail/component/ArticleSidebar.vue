@@ -1,10 +1,10 @@
 <template>
-  <aside class="article-sidebar">
+  <div class="article-sidebar">
     <div class="article-sidebar__sticky">
       <ArticleInfoCard :article="article" :content="content" class="article-sidebar__info-card" />
       <ArticleNavCard class="article-sidebar__nav-card" />
     </div>
-  </aside>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -40,12 +40,15 @@ watch(() => route.params.slug, () => {
 </script>
 
 <style scoped>
+.article-sidebar {
+  height: 100%;
+}
+
 .article-sidebar__sticky {
-  position: sticky;
-  top: 80px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  height: 100%;
 }
 
 .article-sidebar__nav-card {

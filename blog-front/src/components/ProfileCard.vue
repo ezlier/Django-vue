@@ -1,12 +1,8 @@
 <template>
   <div class="profile-card">
     <RouterLink to="/about" class="profile-card__avatar-link">
-      <img
-        v-if="ui.webSetting?.name_avatar"
-        :src="ui.webSetting.name_avatar"
-        :alt="ui.webSetting?.name || '博主'"
-        class="profile-card__avatar"
-      />
+      <img v-if="ui.webSetting?.name_avatar" :src="ui.webSetting.name_avatar" :alt="ui.webSetting?.name || '博主'"
+        class="profile-card__avatar" />
       <div v-else class="profile-card__avatar-placeholder">
         {{ (ui.webSetting?.name || 'B')[0] }}
       </div>
@@ -49,6 +45,7 @@ const articleStore = useArticleStore()
 .profile-card__avatar-link {
   display: inline-block;
   border-radius: 50%;
+  box-shadow: 0 0 15px 5px rgba(255, 0, 0, 0.2);
   overflow: hidden;
   transition: transform 0.6s ease;
 }
@@ -58,9 +55,8 @@ const articleStore = useArticleStore()
 }
 
 .profile-card__avatar {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
   display: block;
 }
