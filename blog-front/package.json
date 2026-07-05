@@ -16,6 +16,7 @@
     "element-plus": "^2.14.2",
     "highlight.js": "^11.11.1",
     "markdown-it": "^14.2.0",
+    "md-editor-v3": "^6.5.3",
     "pinia": "^3.0.4",
     "vue": "^3.5.0",
     "vue-router": "^4.6.4"

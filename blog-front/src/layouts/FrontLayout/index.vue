@@ -11,9 +11,11 @@
 
       <div class="rightcolumn">
         <RouterView v-slot="{ Component }">
-          <KeepAlive :exclude="['ArticleDetail']">
-            <component :is="Component" />
-          </KeepAlive>
+          <template v-if="Component">
+            <KeepAlive :exclude="['ArticleDetail']">
+              <component :is="Component" />
+            </KeepAlive>
+          </template>
         </RouterView>
       </div>
     </main>
@@ -74,7 +76,7 @@ onMounted(() => {
   }
 
   .leftcolumn {
-    flex: none;
+    display: none;
     width: 100%;
   }
 }

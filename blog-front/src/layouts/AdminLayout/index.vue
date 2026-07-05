@@ -6,7 +6,17 @@
       </div>
       <nav class="sidebar-nav">
         <RouterLink to="/admin/dashboard" active-class="active">📊 仪表盘</RouterLink>
-        <RouterLink to="/admin/articles" active-class="active">📝 文章管理</RouterLink>
+
+        <div class="nav-dropdown" @mouseenter="showArticleMenu = true" @mouseleave="showArticleMenu = false">
+          <RouterLink to="/admin/articles" active-class="active" class="nav-dropdown-trigger">📝 文章管理 <span
+              class="arrow">▾</span></RouterLink>
+          <div v-show="showArticleMenu" class="nav-dropdown-menu">
+            <RouterLink to="/admin/article/edit" active-class="active">✏️ 创建文章</RouterLink>
+            <RouterLink to="/admin/article/upload" active-class="active">📤 上传文章</RouterLink>
+          </div>
+        </div>
+
+        <RouterLink to="/admin/prohibited-words" active-class="active">🚫 违禁词管理</RouterLink>
         <RouterLink to="/admin/comments" active-class="active">💬 评论管理</RouterLink>
         <RouterLink to="/admin/message" active-class="active">📩 留言管理</RouterLink>
         <RouterLink to="/admin/tags" active-class="active">🏷️ 标签管理</RouterLink>
@@ -17,7 +27,7 @@
 
     <div class="admin-right">
       <header class="admin-topbar">
-        <button class="collapse-btn" @click="ui.toggleSidebar">☰</button>
+        <a href="/">返回首页</a>
         <span class="username">{{ auth.username }}</span>
         <button class="theme-toggle" @click="ui.toggleTheme">
           {{ ui.isDark ? '☀️' : '🌙' }}
@@ -32,11 +42,13 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useUiStore } from '@/stores/ui'
 
 const auth = useAuthStore()
 const ui = useUiStore()
+const showArticleMenu = ref(false)
 </script>
 
 <style scoped>
@@ -94,6 +106,57 @@ const ui = useUiStore()
 }
 
 .sidebar-nav a.active {
+  background: var(--color-heading);
+  color: #fff;
+  font-weight: 600;
+}
+
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.nav-dropdown-trigger:hover {
+  background: var(--color-border);
+}
+
+.nav-dropdown-trigger .arrow {
+  font-size: 10px;
+  margin-left: auto;
+}
+
+.nav-dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 0 4px 12px;
+}
+
+.nav-dropdown-menu a {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.nav-dropdown-menu a:hover {
+  background: var(--color-border);
+}
+
+.nav-dropdown-menu a.active {
   background: var(--color-heading);
   color: #fff;
   font-weight: 600;

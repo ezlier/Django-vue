@@ -90,6 +90,9 @@ api.interceptors.response.use(
             }
           } else if (tokenData.access) {
             newAccess = tokenData.access
+            if (tokenData.refresh) {
+              localStorage.setItem('refresh_token', tokenData.refresh)
+            }
           }
 
           if (newAccess) {

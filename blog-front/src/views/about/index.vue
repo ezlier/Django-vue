@@ -51,7 +51,7 @@ onMounted(async () => {
   <div class="content">
     <div class="about-wrapper" v-html="html"></div>
 
-    <CommentSection title="留言墙" :comments="messageList" @submit="handleMessage" />
+    <CommentSection title="留言墙" :comments="messageList" :on-submit="handleMessage" />
   </div>
 </template>
 

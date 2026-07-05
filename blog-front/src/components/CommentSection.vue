@@ -3,7 +3,7 @@
     <h3 class="comment-section__title">{{ title }}</h3>
 
     <!-- 输入表单 -->
-    <CommentForm ref="formRef" @submit="onSubmit" />
+    <CommentForm ref="formRef" @submit="handleSubmit" />
 
     <!-- 评论列表 -->
     <div class="comment-section__list" v-if="comments.length">
@@ -48,23 +48,20 @@ interface CommentItem {
 const props = defineProps<{
   title?: string
   comments: CommentItem[]
+  onSubmit: (data: { name: string; text: string; QQ?: string; email?: string }) => Promise<void>
 }>()
 
-const emit = defineEmits<{
-  submit: [data: { name: string; text: string; QQ?: string; email?: string }]
-}>()
+const formRef = ref<InstanceType<typeof CommentForm> | null>(null)
 
 function onAvatarError(item: CommentItem) {
   item._avatarFailed = true
 }
 
-async function onSubmit(data: { name: string; text: string; QQ?: string; email?: string }) {
+async function handleSubmit(data: { name: string; text: string; QQ?: string; email?: string }) {
   try {
-    await emit('submit', data)
-    ElMessage.success('留言成功')
+    await props.onSubmit(data)
     formRef.value?.reset()
   } catch (err: any) {
-    ElMessage.error(err?.response?.data?.msg || '留言失败')
   }
 }
 </script>

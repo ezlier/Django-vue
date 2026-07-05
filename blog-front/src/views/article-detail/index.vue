@@ -18,7 +18,7 @@
     </div>
 
     <!-- 评论区 -->
-    <CommentSection title="评论" :comments="commentList" @submit="handleComment" />
+    <CommentSection title="评论" :comments="commentList" :on-submit="handleComment" />
   </div>
 
   <div v-else-if="loading" class="article-loading">
@@ -27,6 +27,8 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({ name: 'ArticleDetail' })
+
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useArticleStore } from '@/stores/article'
@@ -98,6 +100,7 @@ md.renderer.rules.heading_close = function (tokens: any[], idx: number) {
 
 async function load(slug: string) {
   loading.value = true
+  h1Index = 0
   try {
     const data = await articleStore.fetchArticle(slug)
     article.value = data

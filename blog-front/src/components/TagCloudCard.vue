@@ -2,13 +2,8 @@
   <div class="tag-cloud-card">
     <h3 class="tag-cloud-card__title">标签</h3>
     <div class="tag-cloud-card__list" v-if="tags.length">
-      <RouterLink
-        v-for="tag in tags"
-        :key="tag.id"
-        :to="`/archive`"
-        class="tag-cloud-card__item"
-        :style="{ color: randomColor(tag.id) }"
-      >
+      <RouterLink v-for="tag in tags" :key="tag.id" :to="`/archive`" class="tag-cloud-card__item"
+        :style="{ color: randomColor(tag.id) }">
         {{ tag.name }}
       </RouterLink>
     </div>
@@ -49,7 +44,6 @@ onMounted(async () => {
   border-radius: 12px;
   border: 1px solid var(--color-border);
   background: var(--color-background);
-  position: sticky;
   top: 80px;
 }
 

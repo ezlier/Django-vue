@@ -1,5 +1,4 @@
 import type { RouteRecordRaw } from "vue-router";
-import { useAuthStore } from "@/stores/auth";
 
 // 路由懒加载
 const FrontLayout = () => import("@/layouts/FrontLayout/index.vue");
@@ -22,11 +21,13 @@ const ArticleSidebar = () =>
 const AdminDashboard = () => import("@/views/admin/dashboard/index.vue");
 const AdminArticles = () => import("@/views/admin/articles/index.vue");
 const AdminArticleEdit = () => import("@/views/admin/article-edit/index.vue");
+const AdminArticleUpload = () => import("@/views/admin/article-upload/index.vue");
 const AdminComments = () => import("@/views/admin/comments/index.vue");
 const AdminMessages = () => import("@/views/admin/message/index.vue");
 const AdminTags = () => import("@/views/admin/tags/index.vue");
 const AdminUsers = () => import("@/views/admin/users/index.vue");
 const AdminSettings = () => import("@/views/admin/settings/index.vue");
+const AdminProhibitedWords = () => import("@/views/admin/prohibited-words/index.vue");
 
 const routes: RouteRecordRaw[] = [
   // ── 前台 ──────────────────────────────────────────────────────
@@ -87,6 +88,12 @@ const routes: RouteRecordRaw[] = [
         name: "AdminArticleEdit",
         component: AdminArticleEdit,
       },
+      {
+        path: "article/upload",
+        name: "AdminArticleUpload",
+        component: AdminArticleUpload,
+      },
+      { path: "prohibited-words", name: "AdminProhibitedWords", component: AdminProhibitedWords },
       { path: "comments", name: "AdminComments", component: AdminComments },
       { path: "message", name: "AdminMessages", component: AdminMessages },
       { path: "tags", name: "AdminTags", component: AdminTags },

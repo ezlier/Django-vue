@@ -1,8 +1,8 @@
 <template>
-  <div class="page admin-article-edit">
-    <h1>{{ isEdit ? '编辑文章' : '创建文章' }}</h1>
+  <div class="page admin-article-upload">
+    <h1>上传文章</h1>
 
-    <el-form label-position="top" class="article-form" v-loading="loading">
+    <el-form label-position="top" class="article-form">
       <!-- 文章标题 -->
       <el-form-item label="文章标题">
         <el-input v-model="form.title" placeholder="请输入文章标题" />
@@ -16,16 +16,8 @@
             <button class="tag-chip__remove" @click="removeTag(idx)">&times;</button>
           </span>
           <template v-if="addingTag">
-            <el-input
-              ref="tagInputRef"
-              v-model="newTagName"
-              size="small"
-              style="width: 140px"
-              placeholder="输入标签名"
-              @keyup.enter="confirmAddTag"
-              @keyup.escape="cancelAddTag"
-              @blur="confirmAddTag"
-            />
+            <el-input ref="tagInputRef" v-model="newTagName" size="small" style="width: 140px" placeholder="输入标签名"
+              @keyup.enter="confirmAddTag" @keyup.escape="cancelAddTag" @blur="confirmAddTag" />
           </template>
           <button v-else class="tag-add-btn" @click="startAddTag">+</button>
         </div>
@@ -41,21 +33,18 @@
               <span class="cover-empty__text">无封面图</span>
             </div>
           </div>
-          <el-upload
-            ref="coverUploadRef"
-            class="cover-upload-hidden"
-            :auto-upload="false"
-            :show-file-list="false"
-            :on-change="onCoverChange"
-            accept="image/*"
-          >
+          <el-upload ref="coverUploadRef" class="cover-upload-hidden" :auto-upload="false" :show-file-list="false"
+            :on-change="onCoverChange" accept="image/*">
           </el-upload>
         </div>
       </el-form-item>
 
-      <!-- 文章正文 -->
-      <el-form-item label="文章正文">
-        <MdEditor v-model="form.content" />
+      <!-- Markdown 文件上传 -->
+      <el-form-item label="Markdown 文件">
+        <el-upload class="md-upload" :auto-upload="false" :limit="1" :on-change="onMdFileChange" :file-list="mdFileList"
+          accept=".md,.markdown,.txt">
+          <el-button type="primary">选择 .md 文件</el-button>
+        </el-upload>
       </el-form-item>
 
       <!-- 操作按钮 -->
@@ -70,18 +59,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { createArticle, updateArticle, getAdminArticle } from '@/api/admin'
+import { ref, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
+import { uploadArticle } from '@/api/admin'
 import { ElMessage } from 'element-plus'
-import MdEditor from '@/components/MdEditor.vue'
-import type { UploadFile, UploadInstance } from 'element-plus'
+import type { UploadFile, UploadInstance, ElInput } from 'element-plus'
 
-const route = useRoute()
 const router = useRouter()
-const isEdit = computed(() => !!route.params.slug)
 
-const loading = ref(false)
 const saving = ref(false)
 const publishing = ref(false)
 
@@ -89,7 +74,7 @@ const form = ref({
   title: '',
   tagNames: [] as string[],
   cover: null as File | null,
-  content: '',
+  mdFile: null as File | null,
 })
 
 // ── 封面 ──
@@ -104,7 +89,6 @@ function triggerCoverUpload() {
 
 function onCoverChange(uploadFile: UploadFile) {
   form.value.cover = uploadFile.raw || null
-  // 生成本地预览 URL
   if (uploadFile.raw) {
     coverPreview.value = URL.createObjectURL(uploadFile.raw)
   }
@@ -142,11 +126,23 @@ function removeTag(idx: number) {
   form.value.tagNames.splice(idx, 1)
 }
 
-// ── 表单提交 ──
+// ── MD 文件 ──
+const mdFileList = ref<UploadFile[]>([])
+
+function onMdFileChange(uploadFile: UploadFile) {
+  form.value.mdFile = uploadFile.raw || null
+  mdFileList.value = [uploadFile]
+}
+
+// ── 提交 ──
 async function buildFormData(isDraft: boolean): Promise<FormData> {
   const fd = new FormData()
   fd.append('title', form.value.title)
-  fd.append('mdfile', form.value.content)
+
+  if (form.value.mdFile) {
+    fd.append('mdfile', form.value.mdFile)
+  }
+
   fd.append('is_draft', String(isDraft))
   fd.append('tags', JSON.stringify(form.value.tagNames))
 
@@ -158,14 +154,14 @@ async function buildFormData(isDraft: boolean): Promise<FormData> {
 }
 
 async function handleSaveDraft() {
+  if (!form.value.mdFile) {
+    ElMessage.warning('请先选择 Markdown 文件')
+    return
+  }
   saving.value = true
   try {
     const fd = await buildFormData(true)
-    if (isEdit.value) {
-      await updateArticle(route.params.slug as string, fd)
-    } else {
-      await createArticle(fd)
-    }
+    await uploadArticle(fd)
     ElMessage.success('草稿已保存')
     router.push('/admin/articles')
   } catch {
@@ -176,40 +172,22 @@ async function handleSaveDraft() {
 }
 
 async function handlePublish() {
+  if (!form.value.mdFile) {
+    ElMessage.warning('请先选择 Markdown 文件')
+    return
+  }
   publishing.value = true
   try {
     const fd = await buildFormData(false)
-    if (isEdit.value) {
-      await updateArticle(route.params.slug as string, fd)
-    } else {
-      await createArticle(fd)
-    }
-    ElMessage.success(isEdit.value ? '文章已更新' : '文章已发布')
+    await uploadArticle(fd)
+    ElMessage.success('文章已发布')
     router.push('/admin/articles')
   } catch {
-    ElMessage.error(isEdit.value ? '更新失败' : '发布失败')
+    ElMessage.error('发布失败')
   } finally {
     publishing.value = false
   }
 }
-
-onMounted(async () => {
-  if (isEdit.value) {
-    loading.value = true
-    try {
-      const res = await getAdminArticle(route.params.slug as string)
-      const article = res.data.data || res.data
-      form.value.title = article.title || ''
-      form.value.content = article.content || ''
-      form.value.tagNames = Array.isArray(article.tags) ? article.tags : []
-      coverPreview.value = article.cover || ''
-    } catch {
-      ElMessage.error('获取文章详情失败')
-    } finally {
-      loading.value = false
-    }
-  }
-})
 </script>
 
 <style scoped>
