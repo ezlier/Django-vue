@@ -2,7 +2,7 @@
   <section class="hero">
     <div class="hero__overlay"></div>
     <div class="hero__content">
-      <p class="hero__greeting">{{ greeting }}</p>
+      <p class="hero__info">{<span class="bounce"> CODE/GAME </span>}</p>
       <h1 class="hero__title">{{ ui.webSetting?.web_name || 'My Blog' }}</h1>
       <p class="hero__subtitle">{{ ui.webSetting?.footer_text1 || '记录思考，分享生活' }}</p>
     </div>
@@ -10,19 +10,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useUiStore } from '@/stores/ui'
 
 const ui = useUiStore()
-
-const greeting = computed(() => {
-  const hour = new Date().getHours()
-  if (hour < 6) return '✨ 夜深了'
-  if (hour < 12) return '☀️ 早上好'
-  if (hour < 18) return '🌤 下午好'
-  return '🌙 晚上好'
-})
-
 
 </script>
 
@@ -31,10 +21,8 @@ const greeting = computed(() => {
   position: relative;
   height: 100dvh;
   display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
-
+  pointer-events: none;
   width: 100%;
 }
 
@@ -54,11 +42,13 @@ const greeting = computed(() => {
 }
 
 .hero__content {
+  left: 25%;
+  top: 30%;
   position: relative;
-  text-align: center;
   z-index: 1;
   padding: 32px;
   animation: fadeInUp 0.8s ease-out;
+  color: var(--color-text);
 }
 
 @keyframes fadeInUp {
@@ -73,16 +63,17 @@ const greeting = computed(() => {
   }
 }
 
-.hero__greeting {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--color-text-mute);
-  margin-bottom: 16px;
-  letter-spacing: 1px;
+
+
+.bounce {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  border: 1px solid whitesmoke;
+  padding: 4px 6px;
 }
 
 .hero__title {
-  font-size: clamp(36px, 6vw, 64px);
+  font-size: 8rem;
   font-weight: 800;
   color: var(--color-heading);
   margin: 0 0 16px;

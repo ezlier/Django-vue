@@ -9,10 +9,7 @@
         <RouterLink to="/home" class="navbar__link" active-class="navbar__link--active">首页</RouterLink>
         <RouterLink to="/archive" class="navbar__link" active-class="navbar__link--active">归档</RouterLink>
         <RouterLink to="/about" class="navbar__link" active-class="navbar__link--active">关于</RouterLink>
-        <button class="navbar__theme-btn" @click="ui.toggleTheme" :aria-label="ui.isDark ? '切换亮色模式' : '切换暗色模式'">
-          <span v-if="ui.isDark" class="theme-icon">☀️</span>
-          <span v-else class="theme-icon">🌙</span>
-        </button>
+
       </div>
     </div>
   </nav>
@@ -120,37 +117,5 @@ onUnmounted(() => {
 
 .dark .navbar__link--active {
   background: rgba(129, 140, 248, 0.12);
-}
-
-.navbar__theme-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: none;
-  background: rgba(0, 0, 0, 0.04);
-  cursor: pointer;
-  font-size: 16px;
-  transition: background 0.2s, transform 0.15s;
-  margin-left: 4px;
-}
-
-.navbar__theme-btn:hover {
-  background: rgba(0, 0, 0, 0.08);
-  transform: scale(1.08);
-}
-
-.dark .navbar__theme-btn {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.dark .navbar__theme-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.theme-icon {
-  line-height: 1;
 }
 </style>

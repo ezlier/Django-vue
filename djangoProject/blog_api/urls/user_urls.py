@@ -6,7 +6,7 @@ Router 已自动接管: article
 
 所有路由以 /api/v2/user/ 为前缀。
 """
-from django.urls import path
+from django.urls import path, re_path
 
 from blog_api.v2.views.user.user_views import (
     UserCommentViewSet,
@@ -18,7 +18,7 @@ urlpatterns = [
     # ── Comment (nested under article) ────────────────────────────
     # GET  /user/article/{slug}/comment/
     # POST /user/article/{slug}/comment/
-    path('article/<slug:slug>/comment/',
+    re_path(r'article/(?P<slug>[^/]+)/comment/',
          UserCommentViewSet.as_view({"get": "list_by_article", "post": "create_comment"}),
          name='user-article-comment'),
 

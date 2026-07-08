@@ -1,12 +1,13 @@
 <template>
   <div class="random-card">
-    <h3 class="random-card__title">推荐阅读</h3>
+    <h3 class="random-card__title">随便看看</h3>
     <ul class="random-card__list" v-if="list.length">
       <li v-for="article in list" :key="article.slug">
         <RouterLink :to="`/article/${article.slug}`" class="random-card__link">
-          {{ article.title }}
+          <img class="random-card__cover" :src="article.cover">
+          <p class="card-title">{{ article.title.length > 20 ? article.title.slice(0, 20) + '...' : '无标题' }}</p>
+
         </RouterLink>
-        <span class="random-card__date">{{ formatDate(article.created_time) }}</span>
       </li>
     </ul>
     <p v-else class="random-card__empty">暂无文章</p>
@@ -44,21 +45,24 @@ onMounted(async () => {
 
 <style scoped>
 .random-card {
-  padding: 20px;
+  padding: 15px;
   border-radius: 12px;
   border: 1px solid var(--color-border);
   background: var(--color-background);
   position: sticky;
-  top: 230px;
+  top: 100px;
+  min-width: 0;
 }
 
 .random-card__title {
   font-size: 16px;
   font-weight: 700;
   color: var(--color-heading);
-  margin: 0 0 14px;
+  margin: 0 0 10px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--color-border);
+  position: relative;
+  top: 10px;
 }
 
 .random-card__list {
@@ -82,15 +86,29 @@ onMounted(async () => {
   color: var(--color-text);
   text-decoration: none;
   flex: 1;
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  min-height: 150px;
   transition: color 0.2s;
+  position: relative;
+  overflow: hidden;
+  display: block;
+  min-width: 0;
 }
 
 .random-card__link:hover {
   color: var(--color-heading);
+}
+
+.card-title {
+  position: absolute;
+  bottom: 0px;
+  left: 10px;
+  right: 10px;
+  color: black;
+  font-size: 14px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .random-card__date {
@@ -98,6 +116,15 @@ onMounted(async () => {
   color: var(--color-text-mute);
   flex-shrink: 0;
 }
+
+.random-card__cover {
+  width: 100%;
+  height: 150px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+
 
 .random-card__empty {
   font-size: 13px;

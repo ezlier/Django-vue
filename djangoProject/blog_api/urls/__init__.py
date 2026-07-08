@@ -1,8 +1,8 @@
 """
 v2 路由聚合模块
 
-Admin — Article, Tag, Comment, Message, BannedWord 使用 Router 自动注册。
-        WebSetting, Visitor, Audit, Dashboard, Auth 保留手动路由。
+Admin — Article, Tag, Comment, Message, BannedWord, WebSetting 使用 Router 自动注册。
+        Visitor, Audit, Dashboard, Auth 保留手动路由。
 User  — Article, Comment, Message, WebSetting, About 使用 Router 自动注册。
 
 重要：自定义路由（comment nested、message、websetting、about）必须放在
@@ -34,6 +34,7 @@ admin_router.register(r'tag', AdminTagViewSet, basename='admin-tag')
 admin_router.register(r'comment', AdminCommentViewSet, basename='admin-comment')
 admin_router.register(r'message', AdminMessageViewSet, basename='admin-message')
 admin_router.register(r'bannedword', AdminBannedWordViewSet, basename='admin-bannedword')
+admin_router.register(r'websetting', AdminWebSettingViewSet, basename='admin-websetting')
 
 # ── User Router ───────────────────────────────────────────────────
 user_router = DefaultRouter()

@@ -1,5 +1,5 @@
 """
-v2 Admin 路由 — Router 已接管 article/tag/comment/message/bannedword，
+v2 Admin 路由 — Router 已接管 article/tag/comment/message/bannedword/websetting，
 剩余路由全部走 v2 ViewSet 的 .as_view() 映射。
 
 Admin 接口完整清单 (前缀 /api/v2/admin/):
@@ -9,8 +9,8 @@ Admin 接口完整清单 (前缀 /api/v2/admin/):
   GET    /audit/statistics/            — 审计统计
   GET    /dashboard/                   — 控制台
   PUT    /user/                        — 更新当前用户信息
-  GET    /websetting/settings/         — 网站设置查看
-  PUT    /websetting/update/           — 网站设置更新
+  GET    /websetting/settings/         — 网站设置查看 (Router)
+  PUT    /websetting/update/           — 网站设置更新 (Router)
 """
 from django.urls import path
 
@@ -20,7 +20,6 @@ from blog_api.v2.views.admin.extra_views import (
     AdminAuditViewSet,
     AdminDashboardViewSet,
 )
-from blog_api.v2.views.admin.admin_views import AdminWebSettingViewSet
 from blog_api.v1.views.admin.UserUpdate import UserUpdate
 
 urlpatterns = [
@@ -47,14 +46,6 @@ urlpatterns = [
     path('dashboard/',
          AdminDashboardViewSet.as_view({"get": "dashboard"}),
          name='admin-dashboard'),
-
-    # ── WebSetting ────────────────────────────────────────────────
-    path('websetting/settings/',
-         AdminWebSettingViewSet.as_view({"get": "settings"}),
-         name='admin-websetting-get'),
-    path('websetting/update/',
-         AdminWebSettingViewSet.as_view({"put": "update_settings"}),
-         name='admin-websetting-update'),
 
     # ── User (self update) ────────────────────────────────────────
     path('user/', UserUpdate, name='admin-user-update'),

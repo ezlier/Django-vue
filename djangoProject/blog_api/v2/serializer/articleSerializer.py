@@ -12,6 +12,20 @@ from blog_api.models import Article, Tag
 from blog_api.v2.validators import validate_title, validate_title_optional
 
 
+def _parse_tags_from_formdata(value):
+    """FormData 传 tags 时，DRF 的 ListField 会将 JSON 字符串当作单个标签名存储，
+    此方法检测并解析回真正的列表。"""
+    if isinstance(value, list) and len(value) == 1 and isinstance(value[0], str):
+        import json
+        try:
+            parsed = json.loads(value[0])
+            if isinstance(parsed, list):
+                return parsed
+        except (json.JSONDecodeError, TypeError):
+            pass
+    return value
+
+
 # ── User 侧 Serializer ────────────────────────────────────────────
 
 class TagSerializer(serializers.ModelSerializer):
@@ -140,6 +154,9 @@ class AdminArticleCreateSerializer(serializers.ModelSerializer):
     def validate_title(self, value):
         return validate_title(value)
 
+    def validate_tags(self, value):
+        return _parse_tags_from_formdata(value)
+
 
 class AdminArticleUpdateSerializer(serializers.ModelSerializer):
     """Admin 更新文章 —— 部分更新，所有字段 optional"""
@@ -155,6 +172,9 @@ class AdminArticleUpdateSerializer(serializers.ModelSerializer):
     def validate_title(self, value):
         return validate_title_optional(value)
 
+    def validate_tags(self, value):
+        return _parse_tags_from_formdata(value)
+
 
 class AdminArticleStatusSerializer(serializers.ModelSerializer):
     """Admin 文章状态更新 —— 仅 is_draft"""
@@ -167,13 +187,17 @@ class AdminArticleStatusSerializer(serializers.ModelSerializer):
 
 class AdminArticleUploadSerializer(serializers.ModelSerializer):
     """Admin 上传文章 —— MD 文件直传"""
+    mdfile = serializers.FileField(write_only=True, source='md_file')
     tags = serializers.ListField(
         child=serializers.CharField(), required=False, allow_empty=True
     )
 
     class Meta:
         model = Article
-        fields = ["title", "md_file", "cover", "tags", "is_draft"]
+        fields = ["title", "mdfile", "cover", "tags", "is_draft"]
 
     def validate_title(self, value):
         return validate_title(value)
+
+    def validate_tags(self, value):
+        return _parse_tags_from_formdata(value)

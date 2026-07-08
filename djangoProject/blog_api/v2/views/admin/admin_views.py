@@ -210,8 +210,8 @@ class AdminWebSettingViewSet(viewsets.GenericViewSet):
         super().__init__(**kwargs)
         self.websetting_service = WebSettingService()
 
-    @action(detail=False, methods=["get"])
-    def settings(self, request):
+    @action(detail=False, methods=["get"], url_path="settings")
+    def get_settings(self, request):
         instance = self.websetting_service.get_settings()
         if not instance:
             return ApiResponse.not_found("WebSetting not found")

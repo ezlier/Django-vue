@@ -29,9 +29,7 @@
       <header class="admin-topbar">
         <a href="/">返回首页</a>
         <span class="username">{{ auth.username }}</span>
-        <button class="theme-toggle" @click="ui.toggleTheme">
-          {{ ui.isDark ? '☀️' : '🌙' }}
-        </button>
+        <ThemeButton />
         <button class="logout-btn" @click="auth.logout">退出</button>
       </header>
       <main class="admin-main">

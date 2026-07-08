@@ -140,7 +140,7 @@ function goDetail() {
 .card__tag {
   padding: 2px 10px;
   font-size: 12px;
-  border-radius: 100px;
+  border-radius: 4px;
   background: var(--color-background-mute);
   color: var(--color-text-mute);
   white-space: nowrap;

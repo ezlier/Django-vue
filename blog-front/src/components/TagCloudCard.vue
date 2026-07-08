@@ -40,7 +40,7 @@ onMounted(async () => {
 
 <style scoped>
 .tag-cloud-card {
-  padding: 20px;
+  padding: 15px;
   border-radius: 12px;
   border: 1px solid var(--color-border);
   background: var(--color-background);
@@ -67,7 +67,7 @@ onMounted(async () => {
   padding: 4px 14px;
   font-size: 13px;
   font-weight: 500;
-  border-radius: 100px;
+  border-radius: 4px;
   background: var(--color-background-mute);
   text-decoration: none;
   transition: transform 0.15s, background 0.2s;

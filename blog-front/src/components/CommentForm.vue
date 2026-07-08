@@ -1,37 +1,12 @@
 <template>
   <form class="comment-form" @submit.prevent="handleSubmit">
     <div class="comment-form__row">
-      <input
-        v-model="form.name"
-        class="comment-form__input"
-        type="text"
-        placeholder="你的名字 *"
-        required
-        maxlength="10"
-      />
-      <input
-        v-model="form.QQ"
-        class="comment-form__input"
-        type="text"
-        placeholder="QQ（可选）"
-        maxlength="15"
-      />
-      <input
-        v-model="form.email"
-        class="comment-form__input"
-        type="email"
-        placeholder="Email（可选）"
-        maxlength="50"
-      />
+      <input v-model="form.name" class="comment-form__input" type="text" placeholder="你的名字 *" required maxlength="10" />
+      <input v-model="form.QQ" class="comment-form__input" type="text" placeholder="QQ（可选）" maxlength="15" />
+      <input v-model="form.email" class="comment-form__input" type="email" placeholder="Email（可选）" maxlength="50" />
     </div>
-    <textarea
-      v-model="form.text"
-      class="comment-form__textarea"
-      rows="4"
-      placeholder="说点什么吧..."
-      required
-      maxlength="400"
-    ></textarea>
+    <textarea v-model="form.text" class="comment-form__textarea" rows="4" placeholder="说点什么吧..." required
+      maxlength="400"></textarea>
     <div class="comment-form__footer">
       <span class="comment-form__count">{{ form.text.length }}/400</span>
       <button type="submit" class="comment-form__btn" :disabled="submitting">
@@ -146,8 +121,8 @@ defineExpose({ reset })
   padding: 8px 24px;
   border-radius: 8px;
   border: none;
-  background: var(--color-heading);
-  color: #fff;
+  background: var(--color-background);
+  color: var(--color-text);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;

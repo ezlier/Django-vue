@@ -1,8 +1,16 @@
 <template>
   <div class="front-layout">
+    <SplashScreen ref="splashRef" />
+    <PageTransition />
+    <Background />
+    <Dock />
+
     <Navbar />
 
-    <Header />
+    <div class="head" :style="{ height: headerHeight }">
+      <Header v-if="route.name === 'Home'" />
+      <h1 v-else style="color: var(--color-text);">{{ route.name }}</h1>
+    </div>
 
     <main class="front-main">
       <div class="leftcolumn">
@@ -25,22 +33,41 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { useUiStore } from '@/stores/ui'
+import { useRoute } from 'vue-router'
 import Navbar from './component/navbar.vue'
 import Footer from './component/footer.vue'
 import Header from './component/header.vue'
+import Background from './component/background.vue'
+import Dock from './component/dock.vue'
+import SplashScreen from '@/components/SplashScreen.vue'
+import PageTransition from '@/components/PageTransition.vue'
 
 const ui = useUiStore()
 
-onMounted(() => {
-  ui.fetchWebSetting()
+const route = useRoute();
+
+const splashRef = ref<InstanceType<typeof SplashScreen>>()
+
+onMounted(async () => {
+  await ui.fetchWebSetting()
+  splashRef.value?.close()
 })
+
+const headerHeight = computed(() => {
+  if (route.name === "Home") return "100vh";
+  return "300px";
+});
+
 </script>
 
 <style scoped>
-.front-layout {
-  background: var(--color-background-soft);
+.head {
+  transition: height 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .front-main {
@@ -61,8 +88,7 @@ onMounted(() => {
 .rightcolumn {
   flex: 1;
   min-width: 0;
-  border-radius: 12px;
-  border: var(--border);
+  border-radius: var(--border-radius-xs);
   box-shadow: var(--box-shadow);
   border-color: var(--color-border);
   background-color: var(--color-background-soft);
