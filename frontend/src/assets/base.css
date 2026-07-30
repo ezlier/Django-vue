@@ -1,87 +1,128 @@
+/* =========================================
+   字体定义
+   ========================================= */
 @font-face {
-  font-family: 'MyFont';
-  /* 给字体起一个名字 */
-  src: url('./fonts/龚帆乐淘体.ttf') format('woff2'),
-    url('./fonts/龚帆乐淘体.ttf') format('woff');
+  font-family: "GongFanLeTao";
+  src: url("./fonts/龚帆乐淘体.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: 'MyFont';
-  src: url('./fonts/龚帆乐淘体.ttf') format('woff2');
-  font-weight: bold;
+  font-family: "LXGWWenKai";
+  src: url("./fonts/LXGWWenKaiMono-Medium.woff2") format("woff2");
+  font-weight: 500;
   font-style: normal;
-}
-
-@font-face {
-  font-family: "文楷";
-  src: url('./fonts/LXGWWenKaiMono-Medium.ttf');
+  font-display: swap;
 }
 
 :root {
-  --nav-color:rgba(255, 255, 255, 0.1);
-  --bg-content:rgba(204, 204, 204, 0.9);
-  --bg-color: whitesmoke;
-  --text-color: #000000;
-  --el-color-primary: #ffb6b9;
-  --el-color-primary-light-3: #ffb6b9;
-  --el-color-primary-light-5: #ffb6b9;
-  --el-color-primary-light-7: #ffb6b9;
-  --el-color-primary-light-8: #ffb6b9;
-  --el-color-primary-light-9: #ffb6b9;
-  --el-color-primary-dark-2: #ffb6b9;
-  --el-bg-color: whitesmoke;
+  /* 主色 */
+  --sakura-bg: #f8ebe9;
+  --sakura-primary: #fea3b4;
 
-  --border-radius: 5px;
-  --border: 2px solid #323232;
-  --box-shadow: 4px 4px #323232;
+  /* 扩展色 */
+  --sakura-primary-light: #ffd1d8;
+  --sakura-primary-soft: #fff4f6;
+  --sakura-primary-deep: #f8899f;
+
+  /* 背景 */
+  --color-background: #f5e2d9;
+  --color-background-soft: whitesmoke;
+  --color-background-mute: #fff8f9;
+
+  /* 内容区域 */
+  --bg-content: rgba(255, 255, 255, 0.72);
+
+  --bg-card: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.82),
+    rgba(255, 250, 251, 0.65)
+  );
+
+  /* 导航 */
+  --nav-color: rgba(255, 255, 255, 0.55);
+
+  /* 边框 */
+  --color-border: rgba(254, 163, 180, 0.18);
+  --color-border-hover: rgba(254, 163, 180, 0.35);
+  --border: 1px solid rgba(254, 163, 180, 0.18);
+
+  /* 字体 */
+  --color-heading: #d76d89;
+  --color-text: #6f6164;
+  --ui-color: #000000;
+  --text-secondary: #9a8d91;
+  --color-primary: #fea3b4;
+
+  /* 圆角 */
+
+  --border-radius-xl: 32px;
+  --border-radius: 24px;
+  --border-radius-sm: 16px;
+  --border-radius-xs: 0.5rem;
+
+  /* 阴影 */
+  --box-shadow: 0 12px 40px rgba(254, 163, 180, 0.1);
+  --box-shadow-hover: 0 18px 50px rgba(254, 163, 180, 0.16);
+  --shadow-inner: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+  /* 模糊 */
+  --blur: blur(20px);
+
+  /* 其他 */
+  --section-gap: 120px;
+  --footer-height: 90px;
 }
+
+/* =========================================
+   深色模式
+========================================= */
 
 html.dark {
-  --nav-color:#0000008c;
-  --bg-content:rgba(75, 55, 55, 0);
-  --bg-color: #242424;
-  --text-color: #EEEEEE;
-  --el-color-primary: #ffb6b9;
-  --el-color-primary-light-3: #ffb6b9;
-  --el-color-primary-light-5: #ffb6b9;
-  --el-color-primary-light-7: #ffb6b9;
-  --el-color-primary-light-8: #ffb6b9;
-  --el-color-primary-light-9: #ffb6b9;
-  --el-color-primary-dark-2: #ffb6b9;
-  --el-bg-color: #1e1e1e;
+  --color-background: #2b2328;
+  --color-background-soft: #342c31;
+  --color-background-mute: #3c3338;
+  --bg-content: rgba(44, 34, 40, 0.82);
+  --bg-card: rgba(55, 42, 49, 0.72);
+  --nav-color: rgba(40, 30, 35, 0.55);
+  --color-border: rgba(255, 180, 196, 0.08);
+  --color-border-hover: rgba(255, 180, 196, 0.18);
+  --border: 1px solid rgba(255, 180, 196, 0.12);
+  --color-heading: #ffd3da;
+  --color-text: #eeeeee;
+  --ui-color: #eeeeee;
+  --text-secondary: #bcaeb2;
+  --box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  --box-shadow-hover: 0 18px 44px rgba(0, 0, 0, 0.35);
 }
 
+/* =========================================
+   全局
+========================================= */
 
-*,
-*::before,
-*::after {
+* {
   box-sizing: border-box;
-  margin: 0;
-  font-weight: normal;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   min-height: 100vh;
-  line-height: 1.5;
-  font-family: 'MyFont', sans-serif;
-  font-size: 17px;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--bg-color);
-  color: var(--text-color);
+  font-size: 15px;
+  line-height: 1.9;
+  font-family: "GongFanLeTao", "LXGWWenKai", sans-serif;
+  margin: 0;
 }
 
-.fade-in {
-  opacity: 0;
-  transform: translateY(20px); /* 可选：轻微上移，更有层次感 */
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
+/* =========================================
+   页面容器
+========================================= */
 
-/* 动画：进入视口后显示 */
-.fade-in.visible {
-  opacity: 1;
-  transform: translateY(0);
+#app {
+  display: flex;
+  flex-direction: column;
 }

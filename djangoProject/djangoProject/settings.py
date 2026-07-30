@@ -8,20 +8,21 @@ pymysql.install_as_MySQLdb()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+# ============================================================
+# Security — all secrets come from environment variables
+# ============================================================
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-gu6n2%_9dwd(+mwtzmfinb12h@#vpk%!z$b3oh%5=cy%h5&h89'
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-gu6n2%_9dwd(+mwtzmfinb12h@#vpk%!z$b3oh%5=cy%h5&h89'
+)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "jiangyinan.top"
-]
+ALLOWED_HOSTS = os.environ.get(
+    'DJANGO_ALLOWED_HOSTS',
+    'localhost,127.0.0.1,jiangyinan.top'
+).split(',')
 
 
 # Application definition
@@ -50,7 +51,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'blog_api.middleware.VisitorMiddleware',
-    'blog_api.v2.middleware.GlobalExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'djangoProject.urls'
@@ -79,14 +79,14 @@ WSGI_APPLICATION = 'djangoProject.wsgi.application'
 
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',  # 数据库类型
-#         'NAME': 'blog',                      # 数据库名
-#         'USER': 'root',                        # 用户名
-#         'PASSWORD': '123456',                     # 密码
-#         'HOST': 'db',                   # 主机
-#         'PORT': '3306',                        # 端口
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.environ.get('MYSQL_DATABASE', 'blog'),
+#         'USER': os.environ.get('MYSQL_USER', 'root'),
+#         'PASSWORD': os.environ.get('MYSQL_ROOT_PASSWORD', ''),
+#         'HOST': os.environ.get('MYSQL_HOST', 'db'),
+#         'PORT': os.environ.get('MYSQL_PORT', '3306'),
 #         'OPTIONS': {
-#             'charset': 'utf8mb4',              # 支持表情和多语言
+#             'charset': 'utf8mb4',
 #             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
 #         },
 #     }
@@ -106,10 +106,10 @@ DATABASES = {
     }
 }
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -127,26 +127,19 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
 LANGUAGE_CODE = 'zh-hans'
-
 TIME_ZONE = 'Asia/Shanghai'
-
 USE_I18N = True
-
 USE_TZ = False
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+# ============================================================
+# REST Framework
+# ============================================================
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -167,17 +160,35 @@ REST_FRAMEWORK = {
 }
 
 
-CSRF_COOKIE_SECURE = False
+# ============================================================
+# CSRF / CORS / Session — production defaults
+# ============================================================
+CSRF_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_SECURE = False   # 本地开发 HTTP
+SESSION_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_COOKIE_HTTPONLY = False
-CSRF_TRUSTED_ORIGINS = ['http://localhost:5173', 'http://127.0.0.1:5173', 'https://jiangyinan.top']
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'https://jiangyinan.top',
+]
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173", 'https://jiangyinan.top']
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    'https://jiangyinan.top',
+]
+
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
 
 
+# ============================================================
+# JWT
+# ============================================================
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
@@ -186,10 +197,18 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
+
+# ============================================================
+# Crontab
+# ============================================================
 CRONJOBS = [
     ('0 3 * * *', 'blog_api.cron.clear_old_visitors'),
 ]
 
+
+# ============================================================
+# Static / Media
+# ============================================================
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
@@ -201,6 +220,39 @@ MEDIA_URL = "/media/"
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
-# 建议：增加上传限制，防止 Gunicorn 读取大文件时内存溢出
-DATA_UPLOAD_MAX_MEMORY_SIZE = 20971520  # 20MB
-FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
+# Upload limits
+DATA_UPLOAD_MAX_MEMORY_SIZE = 20971520   # 20MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760   # 10MB
+
+
+# ============================================================
+# Django security checklist (production)
+# ============================================================
+if not DEBUG:
+    SECURE_SSL_REDIRECT = False
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    SESSION_COOKIE_HTTPONLY = True
+    CSRF_COOKIE_HTTPONLY = True
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{levelname}] {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO' if not DEBUG else 'DEBUG',
+    },
+}

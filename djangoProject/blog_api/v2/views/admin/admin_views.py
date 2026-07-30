@@ -218,7 +218,7 @@ class AdminWebSettingViewSet(viewsets.GenericViewSet):
         serializer = self.get_serializer(instance)
         return ApiResponse.success(serializer.data)
 
-    @action(detail=False, methods=["put"])
+    @action(detail=False, methods=["put"], url_path="update")
     def update_settings(self, request):
         instance = self.websetting_service.get_settings()
         if not instance:

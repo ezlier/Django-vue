@@ -12,7 +12,6 @@ Router 之前，否则 Router 生成的 article/{slug}/ 会先匹配，
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from blog_api.v2.views.admin.articles import AdminArticleViewSet
 from blog_api.v2.views.admin.admin_views import (
     AdminTagViewSet,
     AdminCommentViewSet,
@@ -20,12 +19,8 @@ from blog_api.v2.views.admin.admin_views import (
     AdminBannedWordViewSet,
     AdminWebSettingViewSet,
 )
+from blog_api.v2.views.admin.articles import AdminArticleViewSet
 from blog_api.v2.views.user.articles import UserArticleViewSet
-from blog_api.v2.views.user.user_views import (
-    UserCommentViewSet,
-    UserMessageViewSet,
-    UserWebSettingViewSet,
-)
 
 # ── Admin Router ──────────────────────────────────────────────────
 admin_router = DefaultRouter()
